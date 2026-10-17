@@ -9,7 +9,7 @@ Flywheel its brass.
 |---|---|---|---|
 | Flywheel | umbrella | in use | `#7d6110` / `#c9a227` |
 | headwater | notice | designed, not built | `#a8442a` / `#ef8a6a` |
-| eddy | notice | designed, not built | `#6d4bc9` / `#b49cf5` |
+| eddy | notice | designed, not built | `#6b4fd8` / `#a68cff` |
 | millpond | inbox | designed, not built | `#2160b0` / `#6ea8fe` |
 | sluice | land | in use | `#1f8a4c` / `#45c27a` |
 

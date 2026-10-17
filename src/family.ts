@@ -57,7 +57,7 @@ export const family: readonly Member[] = [
     status: 'designed, not built',
     site: `${pages}/eddy/`,
     book: `${pages}/blueprints/eddy/`,
-    accent: { light: '#6d4bc9', dark: '#b49cf5' },
+    accent: { light: '#6b4fd8', dark: '#a68cff' },
   },
   {
     id: 'millpond',
