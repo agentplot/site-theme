@@ -13,10 +13,13 @@
 //   5  The landed bump moves the pin back upstream, and headwater stops
 //      reporting the release.
 //
-// There are two drawings of the same loop: wide, the stations in a row with
-// the return lane beneath, and tall, for a phone, the stations stacked with
-// the return lane up the left. Each station is drawn from its origin, so
-// both share every station's insides; only the origins differ.
+// There are three drawings of the same loop, for three widths of column:
+// wide, the stations in a row with the return lane beneath; square, for a
+// documentation page's column, the loop turning clockwise through the four
+// corners; and tall, for a phone, the stations stacked with the return lane
+// up the left. Each station is drawn from its origin, so all three share
+// every station's insides and every keyframe of opacity; only the origins,
+// and so the moves, differ.
 
 import type { MemberId } from './family';
 
@@ -39,7 +42,7 @@ const RESET = 96;
 type Pt = [number, number];
 
 interface Layout {
-  key: 'w' | 't';
+  key: 'w' | 's' | 't';
   W: number;
   H: number;
   title: Pt;
@@ -54,7 +57,8 @@ interface Layout {
   pl: Pt;
   ld: Pt;
   ldW: number;
-  links: [Pt, Pt][];
+  /** Each station's hand-on to the next, as a line through its points. */
+  links: Pt[][];
   /** The return lane's height, and the loop's last line under it. */
   lane: number;
   loop: Pt;
@@ -99,6 +103,41 @@ const wide: Layout = {
   loop: [196, 328],
 };
 
+// Clockwise: notice and the inbox across the top, then down to work, back
+// along the bottom to land, and up the left to headwater.
+const square: Layout = {
+  key: 's',
+  W: 496,
+  H: 600,
+  title: [24, 34],
+  sub: 'beside',
+  heads: [
+    { n: 1, label: 'NOTICE', at: [24, 66], of: ['headwater', 'eddy'] },
+    { n: 2, label: 'INBOX', at: [192, 66], of: ['millpond'] },
+    { n: 3, label: 'WORK', at: [320, 312], of: ['millpond'] },
+    { n: 4, label: 'LAND', at: [24, 312], of: ['sluice'] },
+    { n: 5, label: 'THE LOOP CLOSES', at: [24, 566], of: ['headwater'] },
+  ],
+  hw: [24, 82],
+  ed: [24, 182],
+  mp: [192, 82],
+  mpW: 274,
+  wt: [320, 328],
+  pl: [320, 428],
+  ld: [24, 328],
+  ldW: 274,
+  links: [
+    [[170, 127], [192, 127]],
+    [[170, 227], [192, 227]],
+    [[430, 272], [430, 328]],
+    [[466, 236], [482, 236], [482, 473], [466, 473]],
+    [[320, 373], [298, 390]],
+    [[320, 473], [298, 418]],
+  ],
+  lane: 540,
+  loop: [24, 586],
+};
+
 const tall: Layout = {
   key: 't',
   W: 338,
@@ -134,16 +173,23 @@ const tall: Layout = {
 
 // ---- keyframes ----------------------------------------------------------
 
+// A keyframe that moves something belongs to its drawing; one that only
+// fades or fills is the same in every drawing, and is written once.
 class Sheet {
   css: string[] = [];
-  constructor(private key: string) {}
+  constructor(
+    private key: string,
+    private shared: Set<string>,
+  ) {}
 
-  name(id: string) {
-    return `fd-${this.key}-${id}`;
+  name(id: string, own = true) {
+    return own ? `fd-${this.key}-${id}` : `fd-${id}`;
   }
 
-  kf(id: string, frames: [number, string][]) {
-    const name = this.name(id);
+  kf(id: string, frames: [number, string][], own = true) {
+    const name = this.name(id, own);
+    if (!own && this.shared.has(name)) return name;
+    if (!own) this.shared.add(name);
     const body = frames.map(([p, v]) => `${+p.toFixed(2)}%{${v}}`).join('');
     this.css.push(`@keyframes ${name}{${body}}.${name}{animation:${name} ${T}s linear infinite}`);
     return name;
@@ -157,7 +203,7 @@ class Sheet {
         ? [[0, o(hi)], [b, o(hi)], [b + E, o(lo)], [100 - E, o(lo)], [100, o(hi)]]
         : [[0, o(lo)], [a - E, o(lo)], [a, o(hi)], [b, o(hi)], [Math.min(b + E, 100), o(lo)]];
     if (a > 0 && b + E < 100) f.push([100, o(lo)]);
-    return this.kf(id, f);
+    return this.kf(id, f, false);
   }
 
   /**
@@ -182,11 +228,14 @@ class Sheet {
 
 const add = (a: Pt, dx: number, dy: number): Pt => [a[0] + dx, a[1] + dy];
 
-function arrow([x1, y1]: Pt, [x2, y2]: Pt) {
+function arrow(pts: Pt[]) {
+  const [x1, y1] = pts[pts.length - 2];
+  const [x2, y2] = pts[pts.length - 1];
   const a = Math.atan2(y2 - y1, x2 - x1);
   const h = (r: number, d: number) => `${(x2 - Math.cos(a + d) * r).toFixed(1)},${(y2 - Math.sin(a + d) * r).toFixed(1)}`;
+  const line = [...pts.slice(0, -1), [x2 - Math.cos(a) * 3, y2 - Math.sin(a) * 3]].map(([x, y]) => `${+x.toFixed(1)},${+y.toFixed(1)}`);
   return (
-    `<line class="fd-link fd-loop" x1="${x1}" y1="${y1}" x2="${x2 - Math.cos(a) * 3}" y2="${y2 - Math.sin(a) * 3}"/>` +
+    `<polyline class="fd-link fd-loop" points="${line.join(' ')}"/>` +
     `<path class="fd-head fd-loop-h" d="M${x2},${y2} L${h(7, 0.45)} L${h(7, -0.45)} Z"/>`
   );
 }
@@ -212,8 +261,8 @@ function bot([x, y]: Pt) {
 
 let instances = 0;
 
-function draw(L: Layout): { svg: string; css: string } {
-  const s = new Sheet(L.key);
+function draw(L: Layout, shared: Set<string>): { svg: string; css: string } {
+  const s = new Sheet(L.key, shared);
   const out: string[] = [];
   const put = (x: string) => out.push(x);
   const at = (p: Pt, inner: string) => `<g transform="translate(${p[0]} ${p[1]})">${inner}</g>`;
@@ -269,7 +318,7 @@ function draw(L: Layout): { svg: string; css: string } {
   put(`<text class="fd-m fd-sm" x="${L.loop[0]}" y="${L.loop[1]}">the landed bump moves the pin to 2026.10.10</text>`);
 
   // The loop: each station hands on to the next, and the return lane closes it.
-  put(L.links.map(([a, b]) => arrow(a, b)).join(''));
+  put(L.links.map(arrow).join(''));
   const d = 'M' + ret.map(([x, y]) => `${x},${y}`).join(' L');
   put(`<path class="fd-ret fd-loop" d="${d}"/>`);
   s.kf('retlit', [
@@ -280,9 +329,9 @@ function draw(L: Layout): { svg: string; css: string } {
     [RESET + 1.5, 'stroke-dashoffset:0;opacity:0'],
     [98, 'stroke-dashoffset:1;opacity:0'],
     [100, 'stroke-dashoffset:1;opacity:1'],
-  ]);
-  put(`<path class="fd-retlit ${s.name('retlit')}" d="${d}" pathLength="1"/>`);
-  put(arrow([L.hw[0] - 12, row], [L.hw[0], row]));
+  ], false);
+  put(`<path class="fd-retlit ${s.name('retlit', false)}" d="${d}" pathLength="1"/>`);
+  put(arrow([[L.hw[0] - 12, row], [L.hw[0], row]]));
 
   // headwater: its report of the release, until the pin moves.
   {
@@ -372,8 +421,8 @@ function draw(L: Layout): { svg: string; css: string } {
         [RESET + 1.5, f(1, 'ok', 0)],
         [98, f(0, 'muted')],
         [100, f(0, 'muted')],
-      ]);
-      put(`<rect class="fd-bar ${s.name(id)}" x="${x + 90}" y="${y + yy}" width="${bar}" height="6" rx="3"/>`);
+      ], false);
+      put(`<rect class="fd-bar ${s.name(id, false)}" x="${x + 90}" y="${y + yy}" width="${bar}" height="6" rx="3"/>`);
     }
     put(`<line class="fd-edge" x1="${x + 4}" y1="${mainY}" x2="${x + L.ldW - 4}" y2="${mainY}"/>`);
     put(`<circle class="fd-commit" cx="${x0}" cy="${mainY}" r="4"/>`);
@@ -423,9 +472,8 @@ function draw(L: Layout): { svg: string; css: string } {
     { t: t + 1, at, o },
   ];
 
-  // 1 · each tool prints a capture, and millpond keeps it.
-  token('capR', until(arrive(6.5, slot.hwOut, slot.cap1, 5.5), dim(25, slot.cap1)), card('release'));
-  token('capM', until(arrive(9.5, slot.edOut, slot.cap2, 5.5), dim(34.5, slot.cap2)), card('meeting'));
+  // What moves is drawn in the order it comes out from under: a signal from
+  // under its capture, a change from under its item.
 
   // 2 · captures become signals; curation joins them into items, and drops one.
   const sigs: [string, number, Pt][] = [
@@ -439,6 +487,9 @@ function draw(L: Layout): { svg: string; css: string } {
     const later = i === 0 ? dim(40, to) : i < 3 ? dim(42.5, to) : dim(42.5, to, 0.3);
     token(`sig${i}`, until(arrive(t, add(from, 0, 2), to), later), chip(label));
   });
+  // 1 · each tool prints a capture, and millpond keeps it.
+  token('capR', until(arrive(6.5, slot.hwOut, slot.cap1, 5.5), dim(25, slot.cap1)), card('release'));
+  token('capM', until(arrive(9.5, slot.edOut, slot.cap2, 5.5), dim(34.5, slot.cap2)), card('meeting'));
   put(
     `<line class="fd-strike ${s.show('strike', 43, RESET)}" x1="${slot.sig[3][0] + 4}" y1="${slot.sig[3][1] + 9}" x2="${slot.sig[3][0] + 72}" y2="${slot.sig[3][1] + 9}"/>`,
   );
@@ -453,6 +504,10 @@ function draw(L: Layout): { svg: string; css: string } {
         `<text class="fd-10 fd-m" x="${p[0] + 7}" y="${p[1] + 14}">sent</text></g>`,
     );
   }
+
+  // 4 · the work goes to sluice, is tested as merged, and lands on main.
+  token('chgA', until(arrive(62, slot.wt, slot.laneA, 4)), change('bump mise'));
+  token('chgB', until(arrive(64, add(slot.pl, 0, 7), slot.laneB, 4)), change('CSV export'));
 
   // 3 · each item goes to one worktree, or into a planner's plan.
   token(
@@ -472,10 +527,6 @@ function draw(L: Layout): { svg: string; css: string } {
     item('CSV export', '2 signals'),
   );
   put(`<g class="${fade('bot', 52.5)}">${bot(add(L.wt, BOX.w - 28, 70))}</g>`);
-
-  // 4 · the work goes to sluice, is tested as merged, and lands on main.
-  token('chgA', until(arrive(62, slot.wt, slot.laneA, 4)), change('bump mise'));
-  token('chgB', until(arrive(64, add(slot.pl, 0, 7), slot.laneB, 4)), change('CSV export'));
 
   // 5 · the landed bump moves the pin, back up the lane to headwater.
   {
@@ -505,18 +556,20 @@ function draw(L: Layout): { svg: string; css: string } {
 }
 
 /**
- * Both drawings, and the keyframes they and the captions need. A reader who
- * asks for reduced motion gets the drawing stopped at STILL, with every step
- * lit.
+ * The three drawings, and the keyframes they and the captions need. A reader
+ * who asks for reduced motion gets the drawing stopped at STILL, with every
+ * step lit.
  */
 export function diagram() {
-  const w = draw(wide);
-  const t = draw(tall);
-  const c = new Sheet('c');
-  STEPS.forEach(([a, b], i) => c.show(`${i + 1}`, a, b, 0.45));
+  const shared = new Set<string>();
+  const w = draw(wide, shared);
+  const q = draw(square, shared);
+  const t = draw(tall, shared);
+  const c = new Sheet('c', shared);
+  STEPS.forEach(([a, b], i) => c.show(`c-${i + 1}`, a, b, 0.45));
   const still =
     `@media (prefers-reduced-motion:reduce){.fd-svg *{animation-play-state:paused!important;` +
     `animation-delay:${(-(STILL / 100) * T).toFixed(2)}s!important}` +
     `.fd-svg .fd-badge,.fd .fd-cap{animation:none!important;opacity:1}}`;
-  return { wide: w.svg, tall: t.svg, css: w.css + t.css + c.css.join('') + still };
+  return { wide: w.svg, square: q.svg, tall: t.svg, css: w.css + q.css + t.css + c.css.join('') + still };
 }

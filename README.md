@@ -104,8 +104,11 @@ it; and the landed bump moves the pin, so headwater stops reporting that
 release. Flywheel is the method the loop belongs to.
 
 It is CSS keyframes only (`src/diagram.ts`), a 20-second loop, so it moves
-with scripts off. It draws a wide copy and a tall one and shows one by the
-figure's own width: the tall one below 44rem, so it reads on a phone. Under
+with scripts off. It draws three copies and shows one by the figure's own
+width, so a site changes nothing to get the right one: wide, the stations in
+a row, from 44rem; square, the loop turning clockwise through four corners,
+from 32rem, which is the column of a Starlight page that keeps "On this
+page" (39.5rem at 1280 pixels); and tall below that, on a phone. Under
 the drawing the five steps are text, each lit while it plays. A reader who
 asks for reduced motion gets the drawing stopped at the loop's last step,
 with every station holding what passed through it, and every step lit; a
@@ -142,7 +145,8 @@ shots [dir]              # build the demo and screenshot it into dir
 The demo in `demo/` takes the theme both ways: a Starlight site standing in
 for millpond's, plain Astro pages under `/plain/<member>/`, one per member
 with the diagram highlighted for it, and `/plain/flywheel-web/`, with
-flywheel-web's palette mapped onto the tokens. It has no package.json of its
+flywheel-web's palette mapped onto the tokens. `/doc/` is an ordinary
+Starlight page with the diagram beside "On this page". It has no package.json of its
 own: it runs on this package's dev dependencies and reaches the theme by
 the package's name and exports, as a site does. `shots` writes each page at
 1280 and 390 pixels in both themes, the diagram for each member, ten frames

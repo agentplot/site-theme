@@ -23,6 +23,7 @@ export default defineConfig({
       sidebar: [
         { label: 'Start', link: '/' },
         { label: 'A page', link: '/page/' },
+        { label: 'The diagram on a page', link: '/doc/' },
       ],
     }),
   ],

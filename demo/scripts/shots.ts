@@ -71,6 +71,15 @@ for (const scheme of ['light', 'dark'] as const) {
   }
 }
 
+// The diagram in a documentation page's column, beside "On this page".
+for (const scheme of ['dark', 'light'] as const) {
+  const page = await open('/doc/', 1280, scheme);
+  await at(page, scheme === 'dark' ? 72 : 93);
+  await shot(page, `starlight-doc-1280-${scheme}`);
+  await shot(page, `diagram-doc-1280-${scheme}`, '.fd');
+  await page.close();
+}
+
 // flywheel-web's palette mapped onto the tokens.
 for (const width of [1280, 390]) {
   const page = await open('/plain/flywheel-web/', width, 'dark');
@@ -94,18 +103,19 @@ for (const id of ['flywheel', 'headwater', 'eddy', 'millpond', 'sluice']) {
 }
 
 // Frames of the loop, and the still a reader who asks for less motion gets.
-for (const [width, scheme] of [
-  [1280, 'dark'],
-  [390, 'light'],
+for (const [path, width, scheme] of [
+  ['/plain/sluice/', 1280, 'dark'],
+  ['/plain/sluice/', 390, 'light'],
+  ['/doc/', 1280, 'dark'],
 ] as const) {
-  const page = await open('/plain/sluice/', width, scheme);
+  const page = await open(path, width, scheme);
   for (const pct of [3, 14, 24, 36, 44, 56, 70, 76, 85, 91]) {
     await at(page, pct);
-    await shot(page, `frame-${width}-${scheme}-${String(pct).padStart(2, '0')}`, '.fd');
+    await shot(page, `frame-${path === '/doc/' ? 'doc' : width}-${scheme}-${String(pct).padStart(2, '0')}`, '.fd');
   }
   await page.close();
-  const still = await open('/plain/sluice/', width, scheme, true);
-  await shot(still, `still-${width}-${scheme}`, '.fd');
+  const still = await open(path, width, scheme, true);
+  await shot(still, `still-${path === '/doc/' ? 'doc' : width}-${scheme}`, '.fd');
   await still.close();
 }
 

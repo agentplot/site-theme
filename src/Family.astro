@@ -1,9 +1,9 @@
 ---
 // The family diagram: one loop from what is noticed to what lands, with the
 // tool whose site shows it in its accent and the others in ink. The drawing
-// is src/diagram.ts; this places its wide and tall copies, one shown by the
-// figure's width, and the five steps as text under them, each lit while the
-// drawing plays it.
+// is src/diagram.ts; this places its wide, square and tall copies, one shown
+// by the figure's width, and the five steps as text under them, each lit
+// while the drawing plays it.
 import './tokens.css';
 import { member, type MemberId } from './family';
 import { diagram } from './diagram';
@@ -16,7 +16,7 @@ interface Props {
 
 const { highlight, class: className } = Astro.props;
 const hi = highlight ? member(highlight) : undefined;
-const { wide, tall, css } = diagram();
+const { wide, square, tall, css } = diagram();
 ---
 
 <figure
@@ -25,6 +25,7 @@ const { wide, tall, css } = diagram();
   data-fd
 >
   <div class="fd-wide" set:html={wide} />
+  <div class="fd-square" set:html={square} />
   <div class="fd-tall" set:html={tall} />
   <figcaption class="fd-caption">
     <p class="fd-claim">
@@ -101,25 +102,42 @@ const { wide, tall, css } = diagram();
     }
   }
 
-  /* The wide drawing from 44rem, the tall one below it. The other keeps
-     playing out of sight, so a turned phone stays in step with the steps. */
+  /* By the figure's width: the wide drawing from 44rem, the square one from
+     32rem, which is a documentation page's column beside Starlight's "On
+     this page", and the tall one below, on a phone. The others keep playing
+     out of sight, so a turned phone stays in step with the steps. */
   .fd-wide,
+  .fd-square,
   .fd-tall {
     line-height: 0;
+  }
+  .fd-square {
+    max-width: 40rem;
+    margin-inline: auto;
   }
   .fd-tall {
     max-width: 30rem;
     margin-inline: auto;
   }
   @container (min-width: 44rem) {
+    .fd-square,
     .fd-tall {
       visibility: hidden;
       height: 0;
       overflow: hidden;
     }
   }
-  @container (max-width: 43.99rem) {
-    .fd-wide {
+  @container (min-width: 32rem) and (max-width: 43.99rem) {
+    .fd-wide,
+    .fd-tall {
+      visibility: hidden;
+      height: 0;
+      overflow: hidden;
+    }
+  }
+  @container (max-width: 31.99rem) {
+    .fd-wide,
+    .fd-square {
       visibility: hidden;
       height: 0;
       overflow: hidden;
@@ -270,6 +288,7 @@ const { wide, tall, css } = diagram();
     fill: var(--fd-fg);
   }
   .fd-link {
+    fill: none;
     stroke: var(--fd-muted);
     stroke-width: 1.3;
   }
