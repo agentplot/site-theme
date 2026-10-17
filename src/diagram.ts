@@ -291,16 +291,16 @@ function draw(L: Layout, shared: Set<string>): { svg: string; css: string } {
   const row = L.hw[1] + 45;
   const ret: Pt[] = [[xa, mainY + 27], [xa, L.lane], [10, L.lane], [10, row], [L.hw[0], row]];
 
-  // The frame: Flywheel, the method the loop belongs to.
+  // The frame: Flywheel, the Method the loop belongs to.
   put(`<rect class="fd-frame" width="${L.W}" height="${L.H}"/>`);
   if (L.sub === 'beside') {
     put(
       `<text x="${L.title[0]}" y="${L.title[1]}"><tspan class="fd-title fd-of-flywheel">Flywheel</tspan>` +
-        `<tspan class="fd-m fd-sm" dx="10">the method all of it belongs to</tspan></text>`,
+        `<tspan class="fd-m fd-sm" dx="10">the Method all of it belongs to</tspan></text>`,
     );
   } else {
     put(`<text class="fd-title fd-of-flywheel" x="${L.title[0]}" y="${L.title[1]}">Flywheel</text>`);
-    put(`<text class="fd-m fd-sm" x="${L.sub[0]}" y="${L.sub[1]}">the method all of it belongs to</text>`);
+    put(`<text class="fd-m fd-sm" x="${L.sub[0]}" y="${L.sub[1]}">the Method all of it belongs to</text>`);
   }
 
   // The steps' headers, each lit in its window.
@@ -549,7 +549,7 @@ function draw(L: Layout, shared: Set<string>): { svg: string; css: string } {
     `<desc id="fd${n}-d">headwater reports a new release of mise and eddy lists a recorded planning call; each prints a capture, and millpond keeps both. ` +
     `The release is its own excerpt, so it becomes one signal; a reader reads the meeting into three signals. Curation joins the signals into two items and drops one. ` +
     `The bump goes to one worktree and the export into a planner&#39;s plan. sluice tests each change as merged and lands both on main. ` +
-    `The landed bump moves the pin back to headwater, which stops reporting that release. Flywheel is the method the whole loop belongs to.</desc>` +
+    `The landed bump moves the pin back to headwater, which stops reporting that release. Flywheel is the Method the whole loop belongs to.</desc>` +
     out.join('') +
     `</svg>`;
   return { svg, css: s.css.join('') };

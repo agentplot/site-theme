@@ -101,7 +101,7 @@ events and print captures; millpond keeps them as an inbox, captures become
 signals, and curation joins signals into items; an item goes to one
 worktree or into a planner's plan; sluice tests the work as merged and lands
 it; and the landed bump moves the pin, so headwater stops reporting that
-release. Flywheel is the method the loop belongs to.
+release. Flywheel is the Method the loop belongs to.
 
 It is CSS keyframes only (`src/diagram.ts`), a 20-second loop, so it moves
 with scripts off. It draws three copies and shows one by the figure's own

@@ -32,7 +32,7 @@ export const family: readonly Member[] = [
   {
     id: 'flywheel',
     name: 'Flywheel',
-    line: 'A method for running a fleet of coding agents, and the engine that runs it.',
+    line: 'The Method for running a fleet of coding agents, and the engine that runs it.',
     place: 'umbrella',
     status: 'in use',
     site: `${pages}/flywheel-web/`,
