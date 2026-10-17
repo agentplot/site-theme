@@ -11,6 +11,7 @@ Flywheel its brass.
 | headwater | notice | designed, not built | `#a8442a` / `#ef8a6a` |
 | eddy | notice | designed, not built | `#6b4fd8` / `#a68cff` |
 | millpond | inbox | designed, not built | `#2160b0` / `#6ea8fe` |
+| sounding | work | designed, not built | `#a3358f` / `#e486d2` |
 | sluice | land | in use | `#1f8a4c` / `#45c27a` |
 
 Every accent meets 4.5:1 against its theme's page, except sluice's light
@@ -120,9 +121,10 @@ tokens, so the bar, footer and diagram take its colours:
 One loop, from what is noticed to what lands. headwater and eddy notice
 events and print captures; millpond keeps them as an inbox, captures become
 signals, and curation joins signals into items; an item goes to one
-worktree or into a planner's plan; sluice tests the work as merged and lands
-it; and the landed bump moves the pin, so headwater stops reporting that
-release. Flywheel is the Method the loop belongs to.
+worktree or into a planner's plan, and a question to a sounding, whose
+accepted conclusion comes back to millpond as a new item; sluice tests the
+work as merged and lands it; and the landed bump moves the pin, so
+headwater stops reporting that release. Flywheel is the Method the loop belongs to.
 
 It is CSS keyframes only (`src/diagram.ts`), a 20-second loop, so it moves
 with scripts off. It draws three copies and shows one by the figure's own

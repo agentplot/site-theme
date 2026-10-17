@@ -7,8 +7,11 @@
 //      prints a capture.
 //   2  millpond keeps both. The release is its own excerpt, so it is one
 //      signal at once; a reader reads the meeting into three. Curation joins
-//      signals into two items and drops one.
-//   3  The bump goes to one worktree; the export into a planner's plan.
+//      two of them into one item and makes the third, a question, an item of
+//      its own.
+//   3  The bump goes to one worktree, the export into a planner's plan, and
+//      the question to a sounding, whose accepted conclusion comes back to
+//      millpond as a new item.
 //   4  sluice tests each change as merged and lands both on main.
 //   5  The landed bump moves the pin back upstream, and headwater stops
 //      reporting the release.
@@ -31,9 +34,9 @@ export const STILL = 93;
 export const STEPS: [number, number][] = [
   [1, 20],
   [20, 46],
-  [46, 61],
-  [61, 78],
-  [78, 96],
+  [46, 64],
+  [64, 80],
+  [80, 96],
 ];
 
 const E = 0.8; // fade width, percent
@@ -55,120 +58,138 @@ interface Layout {
   mpW: number;
   wt: Pt;
   pl: Pt;
+  /** The two work stations' width; the sounding has its own. */
+  wkW: number;
+  sd: Pt;
+  sdW: number;
   ld: Pt;
   ldW: number;
   /** Each station's hand-on to the next, as a line through its points. */
   links: Pt[][];
+  /** The sounding's conclusion, back to millpond as a new item. */
+  back: Pt[];
   /** The return lane's height, and the loop's last line under it. */
   lane: number;
   loop: Pt;
 }
 
-// Every station's size; millpond and sluice take their width from the layout.
+// Every station's size; millpond, the work stations and sluice take their
+// width from the layout.
 const BOX = { w: 146, h: 90 };
+const WK_H = 86;
 const MP_H = 190;
 const LD_BOX_H = 128;
 const MAIN_Y = 160; // main's line, under sluice's box
 
+const heads = (at: Pt[]): Layout['heads'] => [
+  { n: 1, label: 'NOTICE', at: at[0], of: ['headwater', 'eddy'] },
+  { n: 2, label: 'INBOX', at: at[1], of: ['millpond'] },
+  { n: 3, label: 'WORK', at: at[2], of: ['millpond', 'sounding'] },
+  { n: 4, label: 'LAND', at: at[3], of: ['sluice'] },
+  { n: 5, label: 'THE LOOP CLOSES', at: at[4], of: ['headwater'] },
+];
+
+// The work column holds one worktree, a planner's plan and a sounding; the
+// sounding hands nothing on to sluice, and its conclusion goes back up into
+// millpond under the item it answers.
 const wide: Layout = {
   key: 'w',
   W: 812,
-  H: 344,
+  H: 424,
   title: [24, 34],
   sub: 'beside',
-  heads: [
-    { n: 1, label: 'NOTICE', at: [24, 66], of: ['headwater', 'eddy'] },
-    { n: 2, label: 'INBOX', at: [192, 66], of: ['millpond'] },
-    { n: 3, label: 'WORK', at: [488, 66], of: ['millpond'] },
-    { n: 4, label: 'LAND', at: [656, 66], of: ['sluice'] },
-    { n: 5, label: 'THE LOOP CLOSES', at: [24, 328], of: ['headwater'] },
-  ],
+  heads: heads([[24, 66], [192, 66], [488, 66], [656, 66], [24, 408]]),
   hw: [24, 82],
   ed: [24, 182],
   mp: [192, 82],
   mpW: 274,
   wt: [488, 82],
-  pl: [488, 182],
+  pl: [488, 176],
+  wkW: 146,
+  sd: [488, 270],
+  sdW: 146,
   ld: [656, 82],
   ldW: 140,
   links: [
     [[170, 127], [192, 127]],
     [[170, 227], [192, 227]],
-    [[466, 148], [488, 127]],
-    [[466, 195], [488, 227]],
-    [[634, 127], [656, 144]],
-    [[634, 227], [656, 172]],
+    [[466, 148], [488, 125]],
+    [[466, 195], [488, 219]],
+    [[466, 232], [488, 300]],
+    [[634, 125], [656, 144]],
+    [[634, 219], [656, 172]],
   ],
-  lane: 300,
-  loop: [196, 328],
+  back: [[488, 336], [430, 336], [430, 272]],
+  lane: 380,
+  loop: [196, 408],
 };
 
 // Clockwise: notice and the inbox across the top, then down to work, back
 // along the bottom to land, and up the left to headwater.
 const square: Layout = {
   key: 's',
-  W: 496,
-  H: 600,
+  W: 520,
+  H: 688,
   title: [24, 34],
   sub: 'beside',
-  heads: [
-    { n: 1, label: 'NOTICE', at: [24, 66], of: ['headwater', 'eddy'] },
-    { n: 2, label: 'INBOX', at: [192, 66], of: ['millpond'] },
-    { n: 3, label: 'WORK', at: [320, 312], of: ['millpond'] },
-    { n: 4, label: 'LAND', at: [24, 312], of: ['sluice'] },
-    { n: 5, label: 'THE LOOP CLOSES', at: [24, 566], of: ['headwater'] },
-  ],
+  heads: heads([[24, 66], [192, 66], [320, 312], [24, 312], [24, 652]]),
   hw: [24, 82],
   ed: [24, 182],
   mp: [192, 82],
   mpW: 274,
   wt: [320, 328],
-  pl: [320, 428],
+  pl: [320, 422],
+  wkW: 146,
+  sd: [320, 516],
+  sdW: 146,
   ld: [24, 328],
   ldW: 274,
   links: [
     [[170, 127], [192, 127]],
     [[170, 227], [192, 227]],
     [[430, 272], [430, 328]],
-    [[466, 236], [482, 236], [482, 473], [466, 473]],
-    [[320, 373], [298, 390]],
-    [[320, 473], [298, 418]],
+    [[466, 232], [484, 232], [484, 465], [466, 465]],
+    [[466, 232], [484, 232], [484, 559], [466, 559]],
+    [[320, 371], [298, 390]],
+    [[320, 465], [298, 418]],
   ],
-  lane: 540,
-  loop: [24, 586],
+  back: [[466, 590], [502, 590], [502, 214], [466, 214]],
+  lane: 626,
+  loop: [24, 672],
 };
 
+// The sounding sits under the two work stations, between their lines down
+// to sluice, its question and its conclusion passing between them.
 const tall: Layout = {
   key: 't',
   W: 338,
-  H: 842,
+  H: 934,
   title: [24, 34],
   sub: [24, 53],
-  heads: [
-    { n: 1, label: 'NOTICE', at: [24, 80], of: ['headwater', 'eddy'] },
-    { n: 2, label: 'INBOX', at: [24, 210], of: ['millpond'] },
-    { n: 3, label: 'WORK', at: [24, 440], of: ['millpond'] },
-    { n: 4, label: 'LAND', at: [24, 570], of: ['sluice'] },
-    { n: 5, label: 'THE LOOP CLOSES', at: [24, 808], of: ['headwater'] },
-  ],
+  heads: heads([[24, 80], [24, 210], [24, 440], [24, 662], [24, 900]]),
   hw: [24, 92],
   ed: [178, 92],
   mp: [24, 222],
   mpW: 300,
   wt: [24, 452],
-  pl: [178, 452],
-  ld: [24, 582],
+  pl: [184, 452],
+  wkW: 140,
+  sd: [104, 548],
+  sdW: 130,
+  ld: [24, 674],
   ldW: 300,
   links: [
     [[97, 182], [97, 222]],
     [[251, 182], [251, 222]],
-    [[97, 412], [97, 452]],
-    [[251, 412], [251, 452]],
-    [[97, 542], [97, 582]],
-    [[251, 542], [251, 582]],
+    [[94, 412], [94, 452]],
+    [[254, 412], [254, 452]],
+    [[170, 412], [170, 548]],
+    [[94, 538], [94, 674]],
+    [[254, 538], [254, 674]],
   ],
-  lane: 790,
-  loop: [24, 826],
+  back: [[178, 548], [178, 412]],
+  lane: 882,
+  loop: [24, 918],
 };
 
 // ---- keyframes ----------------------------------------------------------
@@ -280,8 +301,10 @@ function draw(L: Layout, shared: Set<string>): { svg: string; css: string } {
     sig: [56, 84, 106, 128].map((y) => mp(col[1], y)),
     item1: mp(col[2], 56),
     item2: mp(col[2], 96),
+    item3: mp(col[2], 140),
     wt: add(L.wt, 10, 52),
-    pl: add(L.pl, 10, 50),
+    pl: add(L.pl, 10, 48),
+    sd: add(L.sd, 10, 48),
     laneA: add(L.ld, 10, 52),
     laneB: add(L.ld, 10, 80),
   };
@@ -318,13 +341,13 @@ function draw(L: Layout, shared: Set<string>): { svg: string; css: string } {
   put(`<text class="fd-m fd-sm" x="${L.loop[0]}" y="${L.loop[1]}">the landed bump moves the pin to 2026.10.10</text>`);
 
   // The loop: each station hands on to the next, and the return lane closes it.
-  put(L.links.map(arrow).join(''));
+  put(L.links.map(arrow).join('') + arrow(L.back));
   const d = 'M' + ret.map(([x, y]) => `${x},${y}`).join(' L');
   put(`<path class="fd-ret fd-loop" d="${d}"/>`);
   s.kf('retlit', [
     [0, 'stroke-dashoffset:1;opacity:1'],
-    [79, 'stroke-dashoffset:1;opacity:1'],
-    [90, 'stroke-dashoffset:0;opacity:1'],
+    [81, 'stroke-dashoffset:1;opacity:1'],
+    [91, 'stroke-dashoffset:0;opacity:1'],
     [RESET, 'stroke-dashoffset:0;opacity:1'],
     [RESET + 1.5, 'stroke-dashoffset:0;opacity:0'],
     [98, 'stroke-dashoffset:1;opacity:0'],
@@ -344,8 +367,8 @@ function draw(L: Layout, shared: Set<string>): { svg: string; css: string } {
       `<g class="${fade('hwrow', 2)}"><rect class="fd-row" x="${x + 10}" y="${y + 34}" width="126" height="22" rx="5"/>` +
         `<text class="fd-mono" x="${x + 18}" y="${y + 49}">mise 2026.10.10</text></g>`,
     );
-    put(`<text class="fd-xs fd-t ${s.show('hws1', 3, 90.5)}" x="${x + 14}" y="${y + 76}">new release · reported</text>`);
-    put(`<text class="fd-xs fd-ok ${s.show('hws2', 90.5, RESET)}" x="${x + 14}" y="${y + 76}">pinned · not reported</text>`);
+    put(`<text class="fd-xs fd-t ${s.show('hws1', 3, 92)}" x="${x + 14}" y="${y + 76}">new release · reported</text>`);
+    put(`<text class="fd-xs fd-ok ${s.show('hws2', 92, RESET)}" x="${x + 14}" y="${y + 76}">pinned · not reported</text>`);
   }
 
   // eddy: a recorded meeting.
@@ -377,20 +400,35 @@ function draw(L: Layout, shared: Set<string>): { svg: string; css: string } {
       `<text class="fd-xs" x="${x + cx + 11}" y="${y + 176}">${label}</text></g>`;
     put(tag('tagex', 'own excerpt', col[0], 21, 26));
     put(tag('tagrd', 'reader', col[1], 26, 35));
-    put(tag('tagcu', 'curation', col[2], 35.5, 44));
+    put(tag('tagcu', 'curation', col[2], 35.5, 45));
   }
 
-  // The two work stations.
-  for (const [p, id, name, sub, h] of [
-    [L.wt, 'wt', 'one worktree', 'an agent on one branch', BOX.h],
-    [L.pl, 'pl', 'a planner&#39;s plan', 'a chore for a team', BOX.h],
+  // The work stations: one worktree, a planner's plan, and a sounding, which
+  // works a question in a session of its own until it concludes.
+  for (const [p, id, name, sub, w] of [
+    [L.wt, 'fd-wt', 'one worktree', 'an agent on one branch', L.wkW],
+    [L.pl, 'fd-pl', 'a planner&#39;s plan', 'a chore for a team', L.wkW],
+    [L.sd, 'fd-of-sounding', 'sounding', 'works one question', L.sdW],
   ] as const) {
     const [x, y] = p;
+    const big = id === 'fd-of-sounding' ? '' : ' fd-13';
     put(
-      `<g class="fd-st fd-${id}"><rect class="fd-box" x="${x}" y="${y}" width="${BOX.w}" height="${h}" rx="8"/>` +
-        `<text class="fd-name fd-13" x="${x + 14}" y="${y + 24}">${name}</text>` +
+      `<g class="fd-st ${id}"><rect class="fd-box" x="${x}" y="${y}" width="${w}" height="${WK_H}" rx="8"/>` +
+        `<text class="fd-name${big}" x="${x + 14}" y="${y + 24}">${name}</text>` +
         `<text class="fd-xs fd-m" x="${x + 14}" y="${y + 40}">${sub}</text></g>`,
     );
+  }
+  {
+    const [bx, by] = add(L.sd, L.sdW - 24, 58);
+    const ping = (id: string, a: number) => {
+      const f = (t: number, k: number, o: number) => [t, `transform:scale(${k});opacity:${o}`] as [number, string];
+      const name = s.kf(id, [f(0, 0.5, 0), f(a, 0.5, 0), f(a + 0.1, 0.5, 0.9), f(a + 2, 2.1, 0), f(a + 2.1, 0.5, 0),
+        f(a + 2.2, 0.5, 0.9), f(a + 4.1, 2.1, 0), f(100, 0.5, 0)], false);
+      return `<circle class="fd-ping ${name}" cx="${bx}" cy="${by - 1}" r="9"/>`;
+    };
+    put(`<g class="fd-of-sounding">${ping('ping1', 55.5)}${ping('ping2', 56.5)}</g>`);
+    put(`<g class="${fade('sdbot', 55.5)}">${bot([bx, by])}</g>`);
+    put(`<text class="fd-xs fd-ok ${fade('sdok', 60.5)}" x="${L.sd[0] + 14}" y="${L.sd[1] + 81}">conclusion accepted</text>`);
   }
 
   // sluice, and main beneath it.
@@ -406,8 +444,8 @@ function draw(L: Layout, shared: Set<string>): { svg: string; css: string } {
         `<text class="fd-xs fd-m" x="${x + 14}" y="${y + 116}">lands what passed</text></g>`,
     );
     for (const [id, yy, a, b] of [
-      ['barA', 59, 66, 71],
-      ['barB', 87, 67.5, 73],
+      ['barA', 59, 69, 74],
+      ['barB', 87, 70.5, 76],
     ] as const) {
       // Every frame names every property: one left out is interpolated
       // from the frames that name it, across the whole loop.
@@ -427,8 +465,8 @@ function draw(L: Layout, shared: Set<string>): { svg: string; css: string } {
     put(`<line class="fd-edge" x1="${x + 4}" y1="${mainY}" x2="${x + L.ldW - 4}" y2="${mainY}"/>`);
     put(`<circle class="fd-commit" cx="${x0}" cy="${mainY}" r="4"/>`);
     for (const [id, cx, label, a] of [
-      ['mA', xa, 'mise', 72.5],
-      ['mB', xb, 'CSV', 75.5],
+      ['mA', xa, 'mise', 75.5],
+      ['mB', xb, 'CSV', 78.5],
     ] as const) {
       put(
         `<g class="${fade(id, a)}"><circle class="fd-merge" cx="${cx}" cy="${mainY}" r="6.5"/>` +
@@ -437,10 +475,10 @@ function draw(L: Layout, shared: Set<string>): { svg: string; css: string } {
       );
     }
     const head = s.move('head', [
-      { t: 72, at: [x0, 0], o: 1, ease: true },
-      { t: 73, at: [xa, 0], o: 1 },
-      { t: 75.5, at: [xa, 0], o: 1, ease: true },
-      { t: 76.5, at: [xb, 0], o: 1 },
+      { t: 75, at: [x0, 0], o: 1, ease: true },
+      { t: 76, at: [xa, 0], o: 1 },
+      { t: 78.5, at: [xa, 0], o: 1, ease: true },
+      { t: 79.5, at: [xb, 0], o: 1 },
       { t: RESET, at: [xb, 0], o: 1, ease: true },
       { t: 99, at: [x0, 0], o: 1 },
     ]);
@@ -471,28 +509,38 @@ function draw(L: Layout, shared: Set<string>): { svg: string; css: string } {
     { t, at, o: 1 },
     { t: t + 1, at, o },
   ];
+  // A dot that runs a line's points from t0 for dur, at one speed.
+  const travel = (id: string, pts: Pt[], t0: number, dur: number, cls: string) => {
+    const len = pts.slice(1).map((p, i) => Math.hypot(p[0] - pts[i][0], p[1] - pts[i][1]));
+    const total = len.reduce((a, b) => a + b, 0);
+    let t = t0;
+    const stops: Stop[] = [{ t: t0 - 0.5, at: pts[0], o: 0 }, { t, at: pts[0], o: 1 }];
+    len.forEach((l, i) => {
+      t += (l / total) * dur;
+      stops.push({ t, at: pts[i + 1], o: 1 });
+    });
+    stops.push({ t: t + 1, at: pts.at(-1)!, o: 0 }, { t: 98, at: pts[0], o: 0 });
+    token(id, stops, `<circle class="${cls}" r="5"/>`);
+  };
 
   // What moves is drawn in the order it comes out from under: a signal from
   // under its capture, a change from under its item.
 
-  // 2 · captures become signals; curation joins them into items, and drops one.
-  const sigs: [string, number, Pt][] = [
-    ['bump mise', 22, slot.cap1],
-    ['CSV export', 27, slot.cap2],
-    ['keep JSON', 29, slot.cap2],
-    ['lunch', 31, slot.cap2],
+  // 2 · captures become signals; curation joins two into one item, and
+  // makes the question an item of its own.
+  const sigs: [string, number, Pt, number][] = [
+    ['bump mise', 22, slot.cap1, 40],
+    ['CSV export', 27, slot.cap2, 42.5],
+    ['keep JSON', 29, slot.cap2, 42.5],
+    ['Parquet?', 31, slot.cap2, 44],
   ];
-  sigs.forEach(([label, t, from], i) => {
+  sigs.forEach(([label, t, from, used], i) => {
     const to = slot.sig[i];
-    const later = i === 0 ? dim(40, to) : i < 3 ? dim(42.5, to) : dim(42.5, to, 0.3);
-    token(`sig${i}`, until(arrive(t, add(from, 0, 2), to), later), chip(label));
+    token(`sig${i}`, until(arrive(t, add(from, 0, 2), to), dim(used, to)), chip(label));
   });
   // 1 · each tool prints a capture, and millpond keeps it.
   token('capR', until(arrive(6.5, slot.hwOut, slot.cap1, 5.5), dim(25, slot.cap1)), card('release'));
   token('capM', until(arrive(9.5, slot.edOut, slot.cap2, 5.5), dim(34.5, slot.cap2)), card('meeting'));
-  put(
-    `<line class="fd-strike ${s.show('strike', 43, RESET)}" x1="${slot.sig[3][0] + 4}" y1="${slot.sig[3][1] + 9}" x2="${slot.sig[3][0] + 72}" y2="${slot.sig[3][1] + 9}"/>`,
-  );
 
   for (const [id, a, p] of [
     ['gh1', 47.5, slot.item1],
@@ -506,10 +554,12 @@ function draw(L: Layout, shared: Set<string>): { svg: string; css: string } {
   }
 
   // 4 · the work goes to sluice, is tested as merged, and lands on main.
-  token('chgA', until(arrive(62, slot.wt, slot.laneA, 4)), change('bump mise'));
-  token('chgB', until(arrive(64, add(slot.pl, 0, 7), slot.laneB, 4)), change('CSV export'));
+  token('chgA', until(arrive(65, slot.wt, slot.laneA, 4)), change('bump mise'));
+  token('chgB', until(arrive(67, add(slot.pl, 0, 7), slot.laneB, 4)), change('CSV export'));
 
-  // 3 · each item goes to one worktree, or into a planner's plan.
+  // 3 · each item goes to one worktree, or into a planner's plan, and the
+  // question to a sounding; its accepted conclusion comes back to millpond,
+  // where the question was, as a new item.
   token(
     'item1',
     until(arrive(38, slot.sig[0], slot.item1), [
@@ -526,29 +576,28 @@ function draw(L: Layout, shared: Set<string>): { svg: string; css: string } {
     ]),
     item('CSV export', '2 signals'),
   );
-  put(`<g class="${fade('bot', 52.5)}">${bot(add(L.wt, BOX.w - 28, 70))}</g>`);
+  token(
+    'item3',
+    until(arrive(42, slot.sig[3], slot.item3), [
+      { t: 50, at: slot.item3, o: 1, ease: true },
+      { t: 55, at: slot.sd, o: 1 },
+    ]),
+    item('Parquet?'),
+  );
+  put(`<g class="${fade('bot', 52.5)}">${bot(add(L.wt, L.wkW - 28, 70))}</g>`);
+  travel('concl', L.back, 60.5, 3.5, 'fd-concl');
+  put(`<g class="${fade('newit', 64.5)}">${at(slot.item3, item('Parquet'))}</g>`);
 
   // 5 · the landed bump moves the pin, back up the lane to headwater.
-  {
-    const len = ret.slice(1).map((p, i) => Math.hypot(p[0] - ret[i][0], p[1] - ret[i][1]));
-    const total = len.reduce((a, b) => a + b, 0);
-    let t = 79;
-    const stops: Stop[] = [{ t: 78.5, at: ret[0], o: 0 }, { t, at: ret[0], o: 1 }];
-    len.forEach((l, i) => {
-      t += (l / total) * 11;
-      stops.push({ t, at: ret[i + 1], o: 1 });
-    });
-    stops.push({ t: t + 1, at: ret.at(-1)!, o: 0 }, { t: 98, at: ret[0], o: 0 });
-    token('pin', stops, `<circle class="fd-pin" r="5"/>`);
-  }
+  travel('pin', ret, 81, 10, 'fd-pin');
 
   const n = ++instances;
   const svg =
     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${L.W} ${L.H}" class="fd-svg" role="img" aria-labelledby="fd${n}-t fd${n}-d">` +
     `<title id="fd${n}-t">The Flywheel family: one loop from what is noticed to what lands</title>` +
     `<desc id="fd${n}-d">headwater reports a new release of mise and eddy lists a recorded planning call; each prints a capture, and millpond keeps both. ` +
-    `The release is its own excerpt, so it becomes one signal; a reader reads the meeting into three signals. Curation joins the signals into two items and drops one. ` +
-    `The bump goes to one worktree and the export into a planner&#39;s plan. sluice tests each change as merged and lands both on main. ` +
+    `The release is its own excerpt, so it becomes one signal; a reader reads the meeting into three signals. Curation joins two of them into one item and makes the third, a question, an item of its own. ` +
+    `The bump goes to one worktree, the export into a planner&#39;s plan, and the question to a sounding, whose accepted conclusion comes back to millpond as a new item. sluice tests each change as merged and lands both on main. ` +
     `The landed bump moves the pin back to headwater, which stops reporting that release. Flywheel is the Method the whole loop belongs to.</desc>` +
     out.join('') +
     `</svg>`;

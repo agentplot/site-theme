@@ -106,7 +106,7 @@ for (const width of [1280, 390]) {
 }
 
 // The diagram highlighted for each member, wide and tall.
-for (const id of ['flywheel', 'headwater', 'eddy', 'millpond', 'sluice']) {
+for (const id of ['flywheel', 'headwater', 'eddy', 'millpond', 'sounding', 'sluice']) {
   for (const [width, scheme] of [
     [1280, 'dark'],
     [1280, 'light'],
@@ -126,7 +126,7 @@ for (const [path, width, scheme] of [
   ['/doc/', 1280, 'dark'],
 ] as const) {
   const page = await open(path, width, scheme);
-  for (const pct of [3, 14, 24, 36, 44, 56, 70, 76, 85, 91]) {
+  for (const pct of [3, 14, 24, 36, 45, 53, 58, 63, 72, 79, 86, 92]) {
     await at(page, pct);
     await shot(page, `frame-${path === '/doc/' ? 'doc' : width}-${scheme}-${String(pct).padStart(2, '0')}`, '.fd');
   }

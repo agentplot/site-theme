@@ -40,9 +40,12 @@ const { wide, square, tall, css } = diagram();
         <span class="fd-n">2</span>
         <span><b class="fd-of-millpond">millpond</b> keeps them as an inbox: captures become signals, and curation joins signals into items.</span>
       </li>
-      <li class="fd-cap fd-c-3 fd-step-millpond">
+      <li class="fd-cap fd-c-3 fd-step-millpond fd-step-sounding">
         <span class="fd-n">3</span>
-        <span><b class="fd-of-millpond">millpond</b> sends an item to one worktree, or a planner takes it into a plan.</span>
+        <span>
+          <b class="fd-of-millpond">millpond</b> sends an item to one worktree, or a planner takes it into a plan. A
+          question goes to a <b class="fd-of-sounding">sounding</b>, whose conclusion comes back as new items.
+        </span>
       </li>
       <li class="fd-cap fd-c-4 fd-step-sluice">
         <span class="fd-n">4</span>
@@ -150,6 +153,7 @@ const { wide, square, tall, css } = diagram();
   .fd-hl-headwater .fd-of-headwater,
   .fd-hl-eddy .fd-of-eddy,
   .fd-hl-millpond .fd-of-millpond,
+  .fd-hl-sounding .fd-of-sounding,
   .fd-hl-sluice .fd-of-sluice {
     --fd-on: var(--fd-hi);
     --fd-on-fill: var(--fd-tint);
@@ -158,6 +162,7 @@ const { wide, square, tall, css } = diagram();
   .fd-hl-headwater .fd-step-headwater .fd-n,
   .fd-hl-eddy .fd-step-eddy .fd-n,
   .fd-hl-millpond .fd-step-millpond .fd-n,
+  .fd-hl-sounding .fd-step-sounding .fd-n,
   .fd-hl-sluice .fd-step-sluice .fd-n {
     background: var(--fd-hi);
   }
@@ -280,10 +285,6 @@ const { wide, square, tall, css } = diagram();
     stroke: var(--fd-muted);
     stroke-dasharray: 3 3;
   }
-  .fd-strike {
-    stroke: var(--fd-muted);
-    stroke-width: 1.5;
-  }
   .fd-tag circle {
     fill: var(--fd-fg);
   }
@@ -322,6 +323,17 @@ const { wide, square, tall, css } = diagram();
   .fd-merge,
   .fd-pin {
     fill: var(--fd-ok);
+  }
+  .fd-concl {
+    fill: var(--fd-ok);
+  }
+  /* The sounding's session at work: rings going out, as a sounding line's. */
+  .fd-ping {
+    fill: none;
+    stroke: var(--fd-on, var(--fd-muted));
+    stroke-width: 1.5;
+    transform-box: fill-box;
+    transform-origin: center;
   }
   .fd-mergein {
     fill: var(--fd-bg);

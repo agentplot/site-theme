@@ -47,6 +47,7 @@ const here = find(Astro.props.current ?? starlightTitle(Astro.locals));
 
 <style>
   .ap-footer {
+    container-type: inline-size;
     margin-top: 3rem;
     padding-top: 1.5rem;
     border-top: 1px solid var(--ap-line);
@@ -73,13 +74,26 @@ const here = find(Astro.props.current ?? starlightTitle(Astro.locals));
     font-weight: 700;
     color: var(--ap-fg);
   }
+  /* Two across on a phone, three in a documentation column, the whole
+     family in a row on a wide page. */
   ul {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
-    gap: 1.25rem 1.5rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.25rem 1.25rem;
     margin: 1.25rem 0;
     padding: 0;
     list-style: none;
+  }
+  @container (min-width: 36rem) {
+    ul {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      column-gap: 1.5rem;
+    }
+  }
+  @container (min-width: 66rem) {
+    ul {
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+    }
   }
   li {
     --m: var(--m-dark);
