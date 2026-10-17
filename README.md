@@ -31,12 +31,13 @@ Beside the accent, three tokens show a state, the same on every site:
 | `@agentplot/site-theme` | `family`, `member(id)`, `find(name)`, `hub`, `pairCss()`, and the `Member` types |
 | `@agentplot/site-theme/tokens.css` | the fonts and the `--ap-*` tokens: type, layout, ink and paper in both themes, `--ap-ok`, `--ap-warn` and `--ap-bad`, `--ap-accent`; styles no element |
 | `@agentplot/site-theme/base.css` | the tokens plus a page, headings and a column (`.ap-column`, `.ap-wide`), for a plain site with no stylesheet of its own |
-| `@agentplot/site-theme/starlight.css` | the tokens mapped onto Starlight's colours and type (its caution is `--ap-warn`), and room for the bar in its header |
+| `@agentplot/site-theme/starlight.css` | the tokens mapped onto Starlight's colours and type (its caution is `--ap-warn`), room for the bar in its header, and the mark's size |
 | `@agentplot/site-theme/FamilyBar.astro` | the strip naming the family, the current member marked; it also sets `--ap-accent` from the list |
 | `@agentplot/site-theme/FamilyFooter.astro` | each member with its line, status, site and design book |
 | `@agentplot/site-theme/Family.astro` | the animated diagram; `highlight` names the member drawn in its accent |
 | `@agentplot/site-theme/starlight/Header.astro` | Starlight's header with the bar above it |
 | `@agentplot/site-theme/starlight/Footer.astro` | Starlight's footer, then the family's |
+| `@agentplot/site-theme/starlight/Banner.astro` | the status banner on every page while the tool is designed, not built |
 
 `src/family.ts` is the one list: a member, its URLs and its accents are
 named there and nowhere else. A new member is a new entry there.
@@ -51,12 +52,24 @@ starlight({
   components: {
     Header: '@agentplot/site-theme/starlight/Header.astro',
     Footer: '@agentplot/site-theme/starlight/Footer.astro',
+    Banner: '@agentplot/site-theme/starlight/Banner.astro',
   },
 });
 ```
 
-The bar and footer find the current member from the site's title, so they
-take no props here. The accent comes from the list; a site that wants
+The bar, the footer and the banner find the current member from the site's
+title, so they take no props here.
+
+- **The mark.** Every family mark is drawn in sluice's frame, a 112 by 88
+  view box, and `starlight.css` draws it `--ap-mark-height` (1.5rem) tall,
+  `--ap-mark-gap` (0.75rem) from the title, at every width. A site sets no
+  size of its own.
+- **The status banner.** While the tool's status in `family.ts` is
+  "designed, not built", every page, splash or not, opens with "<tool> is
+  designed, not built. Its design book holds the design whole.", linked to
+  the tool's book, in line with the page's text; a page's own `banner` is
+  not shown. Once the tool is in use the banner is gone, and a page's own
+  `banner` shows as Starlight draws it. The accent comes from the list; a site that wants
 Starlight's exact accent shades sets `--sl-color-accent-low`,
 `--sl-color-accent` and `--sl-color-accent-high` in a stylesheet after the
 theme's, as sluice's `brand.css` does today.

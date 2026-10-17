@@ -71,6 +71,23 @@ for (const scheme of ['light', 'dark'] as const) {
   }
 }
 
+// The header and the status banner, on the start page and a documentation
+// page, at both widths in both themes.
+for (const scheme of ['light', 'dark'] as const) {
+  for (const width of [1280, 390]) {
+    for (const [name, path] of [
+      ['start', '/'],
+      ['doc', '/doc/'],
+    ]) {
+      const page = await open(path, width, scheme);
+      const file = join(out, `header-${name}-${width}-${scheme}.png`);
+      await page.screenshot({ path: file, clip: { x: 0, y: 0, width, height: width < 600 ? 260 : 220 } });
+      console.log(file);
+      await page.close();
+    }
+  }
+}
+
 // The diagram in a documentation page's column, beside "On this page".
 for (const scheme of ['dark', 'light'] as const) {
   const page = await open('/doc/', 1280, scheme);

@@ -1,0 +1,53 @@
+---
+// Starlight's banner, a site's `components.Banner`: while the site's tool is
+// designed and not built (family.ts), every page opens with the same line
+// and one link to the tool's design book, and a page's own `banner` is not
+// shown. Once the tool is in use, a page's own banner shows as Starlight
+// draws it.
+import Default from '@astrojs/starlight/components/Banner.astro';
+import { find, starlightTitle } from '../family';
+
+const here = find(starlightTitle(Astro.locals));
+const designed = here?.status === 'designed, not built';
+---
+
+{
+  designed ? (
+    <div class="ap-status" data-pagefind-ignore>
+      <p>
+        {here.name} is designed, not built. Its <a href={here.book}>design book</a> holds the design whole.
+      </p>
+    </div>
+  ) : (
+    <Default />
+  )
+}
+
+<style>
+  /* Above the page's title, in line with its text, on a splash page as on
+     any other: the content column's width and margins, as Starlight's own
+     panels take them. */
+  .ap-status {
+    padding: 1.5rem var(--sl-content-pad-x) 0;
+  }
+  p {
+    max-width: var(--sl-content-width);
+    margin: 0;
+    padding: 0.6rem 0.9rem;
+    border-left: 3px solid var(--ap-accent);
+    border-radius: 0 var(--ap-radius-sm) var(--ap-radius-sm) 0;
+    background: color-mix(in oklab, var(--ap-accent) 12%, transparent);
+    color: var(--ap-fg-2);
+    font-size: var(--sl-text-sm);
+    font-weight: 400;
+    line-height: 1.5;
+  }
+  a {
+    color: var(--sl-color-text-accent);
+  }
+  @media (min-width: 72rem) {
+    p {
+      margin-inline: var(--sl-content-margin-inline, auto);
+    }
+  }
+</style>

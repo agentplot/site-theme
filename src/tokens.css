@@ -28,6 +28,10 @@
   --ap-radius: 0.75rem;
   --ap-radius-sm: 0.375rem;
   --ap-bar-height: 2rem;
+  /* A tool's mark beside its name: every mark is drawn in sluice's frame, a
+     112 by 88 view box, at this height, and this far from the name. */
+  --ap-mark-height: 1.5rem;
+  --ap-mark-gap: 0.75rem;
 }
 @media (min-width: 50rem) {
   :root {

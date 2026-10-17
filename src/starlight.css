@@ -57,6 +57,13 @@ h1#_top,
   letter-spacing: var(--ap-tracking-display);
 }
 .site-title {
+  gap: var(--ap-mark-gap);
   font-weight: 700;
   font-size: var(--sl-text-xl);
+}
+/* Starlight sizes the mark to fill the header; the family draws every mark
+   one height at every width. */
+.site-title img {
+  height: var(--ap-mark-height);
+  width: auto;
 }

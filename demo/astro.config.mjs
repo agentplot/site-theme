@@ -15,10 +15,13 @@ export default defineConfig({
     starlight({
       title: 'millpond',
       description: 'A stand-in for a family member’s Starlight site.',
+      // millpond's own mark, to show the family's mark size.
+      logo: { light: './src/assets/mark-light.svg', dark: './src/assets/mark-dark.svg', alt: 'millpond' },
       customCss: ['@agentplot/site-theme/starlight.css'],
       components: {
         Header: '@agentplot/site-theme/starlight/Header.astro',
         Footer: '@agentplot/site-theme/starlight/Footer.astro',
+        Banner: '@agentplot/site-theme/starlight/Banner.astro',
       },
       sidebar: [
         { label: 'Start', link: '/' },
