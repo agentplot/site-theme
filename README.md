@@ -140,8 +140,9 @@ shots [dir]              # build the demo and screenshot it into dir
 ```
 
 The demo in `demo/` takes the theme both ways: a Starlight site standing in
-for millpond's, and plain Astro pages under `/plain/<member>/`, one per
-member with the diagram highlighted for it. It has no package.json of its
+for millpond's, plain Astro pages under `/plain/<member>/`, one per member
+with the diagram highlighted for it, and `/plain/flywheel-web/`, with
+flywheel-web's palette mapped onto the tokens. It has no package.json of its
 own: it runs on this package's dev dependencies and reaches the theme by
 the package's name and exports, as a site does. `shots` writes each page at
 1280 and 390 pixels in both themes, the diagram for each member, ten frames
