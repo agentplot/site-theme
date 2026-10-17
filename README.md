@@ -16,6 +16,14 @@ Flywheel its brass.
 Every accent meets 4.5:1 against its theme's page, except sluice's light
 green, which is sluice's own (4.05:1).
 
+Beside the accent, three tokens show a state, the same on every site:
+
+| Token | Means | Light / dark |
+|---|---|---|
+| `--ap-ok` | passed, landed | `#1f8a4c` / `#45c27a` |
+| `--ap-warn` | needs a look: an advisory, a source that has not answered | `#8a5a00` / `#e9b44c` |
+| `--ap-bad` | failed | `#c0392b` / `#f08a7e` |
+
 ## What it exports
 
 | Export | What |
