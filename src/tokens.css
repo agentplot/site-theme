@@ -36,7 +36,10 @@
 }
 
 /* Ink on paper, from sluice's brand: --ap-fg is the strongest ink and
-   --ap-fg-4 the faintest; --ap-bg the page, --ap-bg-2 a panel on it. */
+   --ap-fg-4 the faintest; --ap-bg the page, --ap-bg-2 a panel on it.
+   --ap-ok is what passed, --ap-warn what needs a look (an advisory, a source
+   that has not answered), --ap-bad what failed; each meets 4.5:1 on the
+   page. */
 :root {
   --ap-bg: #0e1116;
   --ap-bg-2: #161a21;
@@ -49,6 +52,7 @@
   --ap-fg-3: #8c92a0;
   --ap-fg-4: #5d6370;
   --ap-ok: #45c27a;
+  --ap-warn: #e9b44c;
   --ap-bad: #f08a7e;
   color-scheme: dark;
 }
@@ -64,6 +68,7 @@
   --ap-fg-3: #5d6370;
   --ap-fg-4: #8c92a0;
   --ap-ok: #1f8a4c;
+  --ap-warn: #8a5a00;
   --ap-bad: #c0392b;
   color-scheme: light;
 }
@@ -80,6 +85,7 @@
     --ap-fg-3: #5d6370;
     --ap-fg-4: #8c92a0;
     --ap-ok: #1f8a4c;
+    --ap-warn: #8a5a00;
     --ap-bad: #c0392b;
     color-scheme: light;
   }

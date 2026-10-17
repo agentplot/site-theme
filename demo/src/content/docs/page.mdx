@@ -3,6 +3,8 @@ title: A page
 description: An ordinary page, with the family's bar above the header and its footer below.
 ---
 
+import Status from '../../components/Status.astro';
+
 An ordinary Starlight page: the family bar sits above the header, the
 accent comes from the family list, and the family footer follows
 Starlight's own.
@@ -13,3 +15,18 @@ millpond land < captures.jsonl
 
 - Links take the accent: [the family hub](https://agentplot.github.io/flywheel-web/tools/).
 - Code takes IBM Plex Mono; headings Space Grotesk.
+
+## Status
+
+The tokens a page shows a state with: `--ap-ok`, `--ap-warn` and
+`--ap-bad`, beside the site's accent.
+
+<Status />
+
+:::caution
+Starlight's caution takes the family's warning, `--ap-warn`.
+:::
+
+:::danger
+And its danger keeps Starlight's red.
+:::

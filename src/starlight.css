@@ -18,6 +18,10 @@
   --sl-color-gray-5: var(--ap-line);
   --sl-color-gray-6: var(--ap-bg-2);
   --sl-color-black: var(--ap-bg);
+  /* Starlight's caution, in its asides and notices, is the family's warning. */
+  --sl-color-orange-low: color-mix(in oklab, var(--ap-warn) 22%, var(--ap-bg));
+  --sl-color-orange: var(--ap-warn);
+  --sl-color-orange-high: color-mix(in oklab, var(--ap-warn) 45%, var(--ap-fg));
 
   /* The family bar sits inside Starlight's fixed header, above its row. */
   --sl-nav-height: calc(3.5rem + var(--ap-bar-height));
@@ -26,6 +30,8 @@
   --sl-color-accent-low: color-mix(in oklab, var(--ap-accent) 18%, var(--ap-bg));
   --sl-color-accent-high: color-mix(in oklab, var(--ap-accent) 55%, var(--ap-fg));
   --sl-color-gray-7: var(--ap-bg-3);
+  --sl-color-orange-low: color-mix(in oklab, var(--ap-warn) 16%, var(--ap-bg));
+  --sl-color-orange-high: color-mix(in oklab, var(--ap-warn) 60%, var(--ap-fg));
 }
 @media (min-width: 50rem) {
   :root {

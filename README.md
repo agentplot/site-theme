@@ -21,9 +21,9 @@ green, which is sluice's own (4.05:1).
 | Export | What |
 |---|---|
 | `@agentplot/site-theme` | `family`, `member(id)`, `find(name)`, `hub`, `pairCss()`, and the `Member` types |
-| `@agentplot/site-theme/tokens.css` | the fonts and the `--ap-*` tokens: type, layout, ink and paper in both themes, `--ap-accent`; styles no element |
+| `@agentplot/site-theme/tokens.css` | the fonts and the `--ap-*` tokens: type, layout, ink and paper in both themes, `--ap-ok`, `--ap-warn` and `--ap-bad`, `--ap-accent`; styles no element |
 | `@agentplot/site-theme/base.css` | the tokens plus a page, headings and a column (`.ap-column`, `.ap-wide`), for a plain site with no stylesheet of its own |
-| `@agentplot/site-theme/starlight.css` | the tokens mapped onto Starlight's colours and type, and room for the bar in its header |
+| `@agentplot/site-theme/starlight.css` | the tokens mapped onto Starlight's colours and type (its caution is `--ap-warn`), and room for the bar in its header |
 | `@agentplot/site-theme/FamilyBar.astro` | the strip naming the family, the current member marked; it also sets `--ap-accent` from the list |
 | `@agentplot/site-theme/FamilyFooter.astro` | each member with its line, status, site and design book |
 | `@agentplot/site-theme/Family.astro` | the animated diagram; `highlight` names the member drawn in its accent |
