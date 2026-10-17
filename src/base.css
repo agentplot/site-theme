@@ -1,0 +1,60 @@
+/* The family's look on a plain Astro site, for one that has none of its own:
+   the tokens, the page, headings in the display face, and a column. A site
+   with its own stylesheet imports tokens.css instead. */
+@import './tokens.css';
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+html {
+  -webkit-text-size-adjust: 100%;
+}
+body {
+  margin: 0;
+  background: var(--ap-bg);
+  color: var(--ap-fg-2);
+  font: 17px/1.65 var(--ap-font-sans);
+}
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--ap-font-display);
+  letter-spacing: var(--ap-tracking-display);
+  color: var(--ap-fg);
+  line-height: 1.15;
+  text-wrap: balance;
+}
+h1 {
+  font-weight: 700;
+  font-size: clamp(2.2rem, 1rem + 5vw, 3.6rem);
+  letter-spacing: -0.03em;
+}
+a {
+  color: var(--ap-accent);
+  text-underline-offset: 3px;
+}
+:focus-visible {
+  outline: 2px solid var(--ap-accent);
+  outline-offset: 3px;
+}
+code,
+kbd,
+pre {
+  font-family: var(--ap-font-mono);
+  font-size: 0.88em;
+}
+
+/* A column of prose, or a wide one, with the gutter on a phone. */
+.ap-column,
+.ap-wide {
+  width: 100%;
+  max-width: calc(var(--ap-measure) + 2 * var(--ap-gutter));
+  margin-inline: auto;
+  padding-inline: var(--ap-gutter);
+}
+.ap-wide {
+  max-width: calc(var(--ap-wide) + 2 * var(--ap-gutter));
+}

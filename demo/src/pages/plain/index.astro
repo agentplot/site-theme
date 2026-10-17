@@ -1,0 +1,24 @@
+---
+// Every member's page, linked.
+import '@agentplot/site-theme/base.css';
+import FamilyBar from '@agentplot/site-theme/FamilyBar.astro';
+import { family } from '@agentplot/site-theme';
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>site-theme demo</title>
+  </head>
+  <body>
+    <FamilyBar />
+    <main class="ap-column">
+      <h1>site-theme</h1>
+      <ul>
+        {family.map((m) => <li><a href={`${import.meta.env.BASE_URL}/plain/${m.id}/`}>{m.name}</a>: {m.line}</li>)}
+      </ul>
+    </main>
+  </body>
+</html>

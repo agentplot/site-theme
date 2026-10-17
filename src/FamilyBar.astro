@@ -1,0 +1,140 @@
+---
+// A slim strip naming the family, each member linked to its site and the
+// current one marked. A filled dot is a tool in use, a ring one designed and
+// not built. The bar also sets the page's accent, --ap-accent, to the current
+// member's from family.ts, at no specificity, so a site's own rule wins.
+//
+// On a plain Astro site, pass `current`. As Starlight's header (see
+// starlight/Header.astro) it may be left out: the member is the one the
+// site's title names.
+import './tokens.css';
+import { family, find, pairCss, starlightTitle } from './family';
+
+interface Props {
+  /** The member whose site this is, by id or name. */
+  current?: string;
+  /** Set the page's accent from the current member; on by default. */
+  accent?: boolean;
+}
+
+const { current, accent = true } = Astro.props;
+const here = find(current ?? starlightTitle(Astro.locals));
+---
+
+<nav class="ap-bar" aria-label="The Flywheel family">
+  <ul>
+    {
+      family.map((m) => (
+        <li class:list={[m.place]}>
+          <a
+            href={m.site}
+            aria-current={m.id === here?.id ? 'true' : undefined}
+            title={`${m.name}: ${m.line}`}
+            style={`--m-light:${m.accent.light};--m-dark:${m.accent.dark}`}
+          >
+            <span class:list={['dot', m.status !== 'in use' && 'planned']} aria-hidden="true" />
+            {m.name}
+            {m.status !== 'in use' && <span class="sr">({m.status})</span>}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</nav>
+{accent && here && <Fragment set:html={`<style>${pairCss('--ap-accent', here.accent)}</style>`} />}
+
+<style>
+  .ap-bar {
+    height: var(--ap-bar-height);
+    border-bottom: 1px solid var(--ap-line-soft);
+    background: var(--ap-bg);
+    font: 500 0.75rem/1 var(--ap-font-mono);
+  }
+  ul {
+    display: flex;
+    align-items: stretch;
+    gap: 0.25rem 1.1rem;
+    height: 100%;
+    margin: 0;
+    padding: 0 var(--ap-gutter);
+    overflow-x: auto;
+    list-style: none;
+    scrollbar-width: none;
+  }
+  ul::-webkit-scrollbar {
+    display: none;
+  }
+  li {
+    display: flex;
+  }
+  /* The umbrella first, set off from the tools. */
+  .umbrella {
+    padding-right: 1.1rem;
+    border-right: 1px solid var(--ap-line);
+  }
+  a {
+    --m: var(--m-dark);
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    white-space: nowrap;
+    color: var(--ap-fg-3);
+    text-decoration: none;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+  }
+  :global(:root[data-theme='light']) a {
+    --m: var(--m-light);
+  }
+  @media (prefers-color-scheme: light) {
+    :global(:root:not([data-theme])) a {
+      --m: var(--m-light);
+    }
+  }
+  a:hover {
+    color: var(--ap-fg);
+  }
+  a[aria-current] {
+    color: var(--ap-fg);
+    font-weight: 600;
+    border-bottom-color: var(--m);
+  }
+  a:focus-visible {
+    outline: 2px solid var(--m);
+    outline-offset: -2px;
+  }
+  .dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: var(--m);
+    flex: none;
+  }
+  .dot.planned {
+    background: transparent;
+    box-shadow: inset 0 0 0 1.5px var(--m);
+  }
+  /* On a phone the whole family still fits across. */
+  @media (max-width: 30rem) {
+    .ap-bar {
+      font-size: 0.6875rem;
+    }
+    ul {
+      column-gap: 0.7rem;
+    }
+    .umbrella {
+      padding-right: 0.7rem;
+    }
+    a {
+      gap: 0.3rem;
+    }
+  }
+  .sr {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+</style>

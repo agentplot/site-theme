@@ -1,0 +1,393 @@
+---
+// The family diagram: one loop from what is noticed to what lands, with the
+// tool whose site shows it in its accent and the others in ink. The drawing
+// is src/diagram.ts; this places its wide and tall copies, one shown by the
+// figure's width, and the five steps as text under them, each lit while the
+// drawing plays it.
+import './tokens.css';
+import { member, type MemberId } from './family';
+import { diagram } from './diagram';
+
+interface Props {
+  /** The member to draw in its accent; none draws every station in ink. */
+  highlight?: MemberId;
+  class?: string;
+}
+
+const { highlight, class: className } = Astro.props;
+const hi = highlight ? member(highlight) : undefined;
+const { wide, tall, css } = diagram();
+---
+
+<figure
+  class:list={['fd', 'not-content', hi && `fd-hl-${hi.id}`, className]}
+  style={hi ? `--fd-hi-light:${hi.accent.light};--fd-hi-dark:${hi.accent.dark}` : undefined}
+  data-fd
+>
+  <div class="fd-wide" set:html={wide} />
+  <div class="fd-tall" set:html={tall} />
+  <figcaption class="fd-caption">
+    <p class="fd-claim">
+      One loop, from what is noticed to what lands. <b class="fd-of-flywheel">Flywheel</b> is the method it belongs to.
+    </p>
+    <ol class="fd-steps">
+      <li class="fd-cap fd-c-1 fd-step-headwater fd-step-eddy">
+        <span class="fd-n">1</span>
+        <span><b class="fd-of-headwater">headwater</b> and <b class="fd-of-eddy">eddy</b> notice events and print captures.</span>
+      </li>
+      <li class="fd-cap fd-c-2 fd-step-millpond">
+        <span class="fd-n">2</span>
+        <span><b class="fd-of-millpond">millpond</b> keeps them as an inbox: captures become signals, and curation joins signals into items.</span>
+      </li>
+      <li class="fd-cap fd-c-3 fd-step-millpond">
+        <span class="fd-n">3</span>
+        <span><b class="fd-of-millpond">millpond</b> sends an item to one worktree, or a planner takes it into a plan.</span>
+      </li>
+      <li class="fd-cap fd-c-4 fd-step-sluice">
+        <span class="fd-n">4</span>
+        <span><b class="fd-of-sluice">sluice</b> tests the work as merged and lands it.</span>
+      </li>
+      <li class="fd-cap fd-c-5 fd-step-headwater">
+        <span class="fd-n">5</span>
+        <span>The landed bump moves the pin, so <b class="fd-of-headwater">headwater</b> stops reporting that release.</span>
+      </li>
+    </ol>
+    <button type="button" class="fd-pause" aria-pressed="false" hidden>Pause</button>
+  </figcaption>
+</figure>
+<Fragment set:html={`<style>${css}</style>`} />
+
+<script>
+  // A reader can stop the loop; with scripts off it plays, and with reduced
+  // motion it is a still and the button stays hidden.
+  for (const fig of document.querySelectorAll<HTMLElement>('[data-fd]')) {
+    const button = fig.querySelector<HTMLButtonElement>('.fd-pause');
+    if (!button || matchMedia('(prefers-reduced-motion: reduce)').matches) continue;
+    button.hidden = false;
+    button.addEventListener('click', () => {
+      const paused = fig.classList.toggle('fd-paused');
+      button.textContent = paused ? 'Play' : 'Pause';
+      button.setAttribute('aria-pressed', String(paused));
+    });
+  }
+</script>
+
+<style is:global>
+  .fd {
+    --fd-bg: var(--ap-bg-2);
+    --fd-panel: var(--ap-bg-3);
+    --fd-fg: var(--ap-fg);
+    --fd-muted: var(--ap-fg-3);
+    --fd-rule: var(--ap-line);
+    --fd-ok: var(--ap-ok);
+    --fd-ink: var(--ap-bg);
+    --fd-soft: color-mix(in oklab, var(--fd-fg) 10%, var(--fd-panel));
+    --fd-hi: var(--fd-hi-dark, var(--fd-fg));
+    --fd-tint: color-mix(in oklab, var(--fd-hi) 11%, var(--fd-panel));
+    position: relative;
+    margin: 0;
+    border: 1px solid var(--fd-rule);
+    border-radius: var(--ap-radius);
+    overflow: hidden;
+    background: var(--fd-bg);
+    container-type: inline-size;
+  }
+  :root[data-theme='light'] .fd {
+    --fd-hi: var(--fd-hi-light, var(--fd-fg));
+  }
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme]) .fd {
+      --fd-hi: var(--fd-hi-light, var(--fd-fg));
+    }
+  }
+
+  /* The wide drawing from 44rem, the tall one below it. The other keeps
+     playing out of sight, so a turned phone stays in step with the steps. */
+  .fd-wide,
+  .fd-tall {
+    line-height: 0;
+  }
+  .fd-tall {
+    max-width: 30rem;
+    margin-inline: auto;
+  }
+  @container (min-width: 44rem) {
+    .fd-tall {
+      visibility: hidden;
+      height: 0;
+      overflow: hidden;
+    }
+  }
+  @container (max-width: 43.99rem) {
+    .fd-wide {
+      visibility: hidden;
+      height: 0;
+      overflow: hidden;
+    }
+  }
+
+  /* The member whose site this is: its stations, its steps' badges and its
+     name in the steps take its accent. */
+  .fd-hl-flywheel .fd-of-flywheel,
+  .fd-hl-headwater .fd-of-headwater,
+  .fd-hl-eddy .fd-of-eddy,
+  .fd-hl-millpond .fd-of-millpond,
+  .fd-hl-sluice .fd-of-sluice {
+    --fd-on: var(--fd-hi);
+    --fd-on-fill: var(--fd-tint);
+    --fd-on-width: 2;
+  }
+  .fd-hl-headwater .fd-step-headwater .fd-n,
+  .fd-hl-eddy .fd-step-eddy .fd-n,
+  .fd-hl-millpond .fd-step-millpond .fd-n,
+  .fd-hl-sluice .fd-step-sluice .fd-n {
+    background: var(--fd-hi);
+  }
+  .fd.fd-hl-flywheel {
+    border-color: var(--fd-hi);
+  }
+  /* Flywheel is the method the whole loop belongs to: its links, its lane
+     and every step take the accent. */
+  .fd-hl-flywheel .fd-loop {
+    stroke: var(--fd-hi);
+    stroke-width: 1.8;
+  }
+  .fd-hl-flywheel .fd-badge {
+    --fd-on: var(--fd-hi);
+  }
+  .fd-hl-flywheel .fd-n {
+    background: var(--fd-hi);
+  }
+  .fd-hl-flywheel .fd-loop-h {
+    fill: var(--fd-hi);
+  }
+
+  .fd-svg {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .fd-svg text {
+    font-family: var(--ap-font-sans);
+    font-size: 12px;
+    fill: var(--fd-fg);
+  }
+  .fd-svg .fd-mono,
+  .fd-svg .fd-pillt {
+    font-family: var(--ap-font-mono);
+    font-size: 10.5px;
+  }
+  .fd-svg .fd-10 {
+    font-size: 10px;
+  }
+  .fd-svg .fd-xs {
+    font-size: 11px;
+  }
+  .fd-svg .fd-sm {
+    font-size: 12.5px;
+  }
+  .fd-svg .fd-m {
+    fill: var(--fd-muted);
+  }
+  .fd-svg .fd-ok {
+    fill: var(--fd-ok);
+  }
+  .fd-svg .fd-ink {
+    fill: var(--fd-ink);
+  }
+  .fd-svg .fd-soft-ink {
+    opacity: 0.72;
+  }
+  .fd-svg .fd-title {
+    font-family: var(--ap-font-display);
+    font-size: 19px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    fill: var(--fd-on, var(--fd-fg));
+  }
+  .fd-svg .fd-name {
+    font-family: var(--ap-font-display);
+    font-size: 14.5px;
+    font-weight: 700;
+    fill: var(--fd-on, var(--fd-fg));
+  }
+  .fd-svg .fd-13 {
+    font-size: 13px;
+  }
+  .fd-svg .fd-hd {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    fill: var(--fd-muted);
+  }
+  .fd-badge-c {
+    fill: var(--fd-on, var(--fd-fg));
+  }
+  .fd-svg .fd-badge-t {
+    font-size: 10.5px;
+    font-weight: 700;
+    fill: var(--fd-ink);
+  }
+
+  .fd-frame {
+    fill: var(--fd-bg);
+  }
+  .fd-box {
+    fill: var(--fd-on-fill, var(--fd-panel));
+    stroke: var(--fd-on, var(--fd-rule));
+    stroke-width: var(--fd-on-width, 1.25);
+  }
+  .fd-row,
+  .fd-chip,
+  .fd-track {
+    fill: var(--fd-soft);
+  }
+  .fd-card,
+  .fd-chg {
+    fill: var(--fd-panel);
+    stroke: var(--fd-fg);
+    stroke-width: 1.2;
+  }
+  .fd-item,
+  .fd-pill {
+    fill: var(--fd-fg);
+  }
+  .fd-svg .fd-pillt {
+    font-size: 10px;
+    font-weight: 500;
+    fill: var(--fd-ink);
+  }
+  .fd-ghost {
+    fill: none;
+    stroke: var(--fd-muted);
+    stroke-dasharray: 3 3;
+  }
+  .fd-strike {
+    stroke: var(--fd-muted);
+    stroke-width: 1.5;
+  }
+  .fd-tag circle {
+    fill: var(--fd-fg);
+  }
+  .fd-link {
+    stroke: var(--fd-muted);
+    stroke-width: 1.3;
+  }
+  .fd-head {
+    fill: var(--fd-muted);
+  }
+  .fd-ret {
+    fill: none;
+    stroke: var(--fd-muted);
+    stroke-width: 1.3;
+    stroke-dasharray: 3 4;
+  }
+  .fd-retlit {
+    fill: none;
+    stroke: var(--fd-ok);
+    stroke-width: 2.2;
+    stroke-linejoin: round;
+    stroke-dasharray: 1;
+  }
+  .fd-bar {
+    transform-box: fill-box;
+    transform-origin: left center;
+  }
+  .fd-edge {
+    stroke: var(--fd-muted);
+    stroke-width: 2;
+  }
+  .fd-commit {
+    fill: var(--fd-muted);
+  }
+  .fd-merge,
+  .fd-pin {
+    fill: var(--fd-ok);
+  }
+  .fd-mergein {
+    fill: var(--fd-bg);
+  }
+  .fd-bot rect,
+  .fd-bot circle {
+    fill: var(--fd-fg);
+  }
+  .fd-bot line {
+    stroke: var(--fd-fg);
+    stroke-width: 2;
+  }
+  .fd-bot .fd-eye {
+    fill: var(--fd-panel);
+  }
+
+  /* The steps, as text: five across under the wide drawing, a list under the
+     tall one. */
+  .fd-caption {
+    position: relative;
+    padding: 0.9rem var(--ap-gutter) 1rem;
+    border-top: 1px solid var(--fd-rule);
+    font: 0.875rem/1.5 var(--ap-font-sans);
+    color: var(--ap-fg-2);
+  }
+  .fd-caption b {
+    font-weight: 600;
+    color: var(--fd-on, var(--ap-fg));
+  }
+  .fd-claim {
+    margin: 0 4.5rem 0.75rem 0;
+    color: var(--ap-fg);
+  }
+  .fd-steps {
+    display: grid;
+    gap: 0.45rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .fd-cap {
+    display: grid;
+    grid-template-columns: 1.35rem 1fr;
+    gap: 0.4rem;
+    align-items: start;
+    align-content: start;
+  }
+  .fd-n {
+    display: grid;
+    place-items: center;
+    width: 1.2rem;
+    height: 1.2rem;
+    margin-top: 0.08rem;
+    border-radius: 50%;
+    background: var(--ap-fg);
+    color: var(--ap-bg);
+    font: 700 0.68rem/1 var(--ap-font-sans);
+  }
+  @container (min-width: 44rem) {
+    .fd-steps {
+      grid-template-columns: repeat(5, 1fr);
+      gap: 1.1rem;
+    }
+    .fd-cap {
+      grid-template-columns: 1fr;
+      gap: 0.35rem;
+    }
+  }
+  .fd-pause {
+    position: absolute;
+    top: 0.75rem;
+    right: var(--ap-gutter);
+    padding: 0.15rem 0.6rem;
+    border: 1px solid var(--fd-rule);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--ap-fg-3);
+    font: 500 0.72rem/1.5 var(--ap-font-mono);
+    cursor: pointer;
+  }
+  .fd-pause:hover {
+    color: var(--ap-fg);
+  }
+  .fd-paused .fd-svg *,
+  .fd-paused .fd-cap {
+    animation-play-state: paused !important;
+  }
+</style>

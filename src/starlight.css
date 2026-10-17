@@ -1,0 +1,56 @@
+/* The family's look on Starlight, imported by a Starlight site's customCss:
+   the tokens mapped onto Starlight's colours and type, room for the family
+   bar above Starlight's header, and the display face on headings. */
+@import './tokens.css';
+
+:root {
+  --sl-font: var(--ap-font-sans);
+  --sl-font-mono: var(--ap-font-mono);
+
+  --sl-color-accent-low: color-mix(in oklab, var(--ap-accent) 24%, var(--ap-bg));
+  --sl-color-accent: var(--ap-accent);
+  --sl-color-accent-high: color-mix(in oklab, var(--ap-accent) 42%, var(--ap-fg));
+  --sl-color-white: var(--ap-fg);
+  --sl-color-gray-1: var(--ap-fg-1);
+  --sl-color-gray-2: var(--ap-fg-2);
+  --sl-color-gray-3: var(--ap-fg-3);
+  --sl-color-gray-4: var(--ap-fg-4);
+  --sl-color-gray-5: var(--ap-line);
+  --sl-color-gray-6: var(--ap-bg-2);
+  --sl-color-black: var(--ap-bg);
+
+  /* The family bar sits inside Starlight's fixed header, above its row. */
+  --sl-nav-height: calc(3.5rem + var(--ap-bar-height));
+}
+:root[data-theme='light'] {
+  --sl-color-accent-low: color-mix(in oklab, var(--ap-accent) 18%, var(--ap-bg));
+  --sl-color-accent-high: color-mix(in oklab, var(--ap-accent) 55%, var(--ap-fg));
+  --sl-color-gray-7: var(--ap-bg-3);
+}
+@media (min-width: 50rem) {
+  :root {
+    --sl-nav-height: calc(4rem + var(--ap-bar-height));
+  }
+}
+header.header {
+  padding-top: calc(var(--sl-nav-pad-y) + var(--ap-bar-height));
+}
+/* What Starlight sizes or centres by the header's height keeps to its row. */
+.site-title {
+  height: calc(var(--sl-nav-height) - var(--ap-bar-height) - 2 * var(--sl-nav-pad-y));
+}
+.sl-menu-button {
+  top: calc(var(--ap-bar-height) + (var(--sl-nav-height) - var(--ap-bar-height) - var(--sl-menu-button-size)) / 2);
+}
+
+.site-title,
+.sl-markdown-content :is(h1, h2, h3, h4),
+h1#_top,
+.hero h1 {
+  font-family: var(--ap-font-display);
+  letter-spacing: var(--ap-tracking-display);
+}
+.site-title {
+  font-weight: 700;
+  font-size: var(--sl-text-xl);
+}

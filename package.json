@@ -1,0 +1,57 @@
+{
+  "name": "@agentplot/site-theme",
+  "version": "0.1.0",
+  "description": "The Flywheel family's site theme: type and layout, the family bar and footer, the family list and the family diagram, for Starlight and plain Astro sites.",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "demo": "astro dev --root demo",
+    "demo:build": "astro build --root demo",
+    "shots": "bun run demo/scripts/shots.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/agentplot/site-theme.git"
+  },
+  "keywords": [
+    "astro-component",
+    "withastro",
+    "starlight"
+  ],
+  "files": [
+    "src",
+    "LICENSE",
+    "README.md"
+  ],
+  "exports": {
+    ".": "./src/index.ts",
+    "./family": "./src/family.ts",
+    "./tokens.css": "./src/tokens.css",
+    "./base.css": "./src/base.css",
+    "./starlight.css": "./src/starlight.css",
+    "./FamilyBar.astro": "./src/FamilyBar.astro",
+    "./FamilyFooter.astro": "./src/FamilyFooter.astro",
+    "./Family.astro": "./src/Family.astro",
+    "./starlight/Header.astro": "./src/starlight/Header.astro",
+    "./starlight/Footer.astro": "./src/starlight/Footer.astro"
+  },
+  "dependencies": {
+    "@fontsource/ibm-plex-mono": "5.3.0",
+    "@fontsource/ibm-plex-sans": "5.3.0",
+    "@fontsource/space-grotesk": "5.3.0"
+  },
+  "peerDependencies": {
+    "@astrojs/starlight": ">=0.42.0",
+    "astro": ">=7.2.0"
+  },
+  "peerDependenciesMeta": {
+    "@astrojs/starlight": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@astrojs/starlight": "0.42.6",
+    "astro": "7.3.8",
+    "playwright": "1.61.1"
+  }
+}

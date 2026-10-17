@@ -1,0 +1,20 @@
+---
+// Starlight's header with the family bar above it: a site's
+// `components.Header`. starlight.css makes the room, raising
+// --sl-nav-height by --ap-bar-height.
+import Default from '@astrojs/starlight/components/Header.astro';
+import FamilyBar from '../FamilyBar.astro';
+---
+
+<div class="ap-over-header"><FamilyBar /></div>
+<Default />
+
+<style>
+  /* Across the top of Starlight's fixed header, out of its padding. */
+  .ap-over-header {
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline: 0;
+    z-index: 1;
+  }
+</style>

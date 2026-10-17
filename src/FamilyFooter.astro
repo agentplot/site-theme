@@ -1,0 +1,156 @@
+---
+// The family at the foot of every page: each member with its line, whether
+// it is in use, and links to its site and its design book. Pass `current` on
+// a plain Astro site; under Starlight the site's title names it.
+import './tokens.css';
+import { family, find, hub, starlightTitle } from './family';
+
+interface Props {
+  /** The member whose site this is, by id or name. */
+  current?: string;
+}
+
+const here = find(Astro.props.current ?? starlightTitle(Astro.locals));
+---
+
+<section class="ap-footer" aria-labelledby="ap-footer-title">
+  <p class="head" id="ap-footer-title">
+    <a href={hub}>The Flywheel family</a>: one loop, from what is noticed to what lands.
+  </p>
+  <ul>
+    {
+      family.map((m) => (
+        <li
+          class:list={[{ here: m.id === here?.id }]}
+          style={`--m-light:${m.accent.light};--m-dark:${m.accent.dark}`}
+        >
+          <p class="name">
+            <span class:list={['dot', m.status !== 'in use' && 'planned']} aria-hidden="true" />
+            <a href={m.site} aria-current={m.id === here?.id ? 'true' : undefined}>
+              {m.name}
+            </a>
+          </p>
+          <p class="status">{m.status}</p>
+          <p class="line">{m.line}</p>
+          <p class="links">
+            <a href={m.site}>Site</a>
+            <a href={m.book}>Design book</a>
+          </p>
+        </li>
+      ))
+    }
+  </ul>
+  <p class="fine">
+    Built in the open by <a href="https://github.com/agentplot">agentplot</a>, under the MIT licence.
+  </p>
+</section>
+
+<style>
+  .ap-footer {
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--ap-line);
+    font: 0.8125rem/1.5 var(--ap-font-sans);
+    color: var(--ap-fg-3);
+  }
+  p {
+    margin: 0;
+  }
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+  a:hover {
+    color: var(--ap-fg);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .head {
+    color: var(--ap-fg-2);
+  }
+  .head a {
+    font-family: var(--ap-font-display);
+    font-weight: 700;
+    color: var(--ap-fg);
+  }
+  ul {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
+    gap: 1.25rem 1.5rem;
+    margin: 1.25rem 0;
+    padding: 0;
+    list-style: none;
+  }
+  li {
+    --m: var(--m-dark);
+    display: grid;
+    align-content: start;
+    gap: 0.3rem;
+    padding-left: 0.75rem;
+    border-left: 2px solid var(--ap-line);
+  }
+  :global(:root[data-theme='light']) li {
+    --m: var(--m-light);
+  }
+  @media (prefers-color-scheme: light) {
+    :global(:root:not([data-theme])) li {
+      --m: var(--m-light);
+    }
+  }
+  li.here {
+    border-left-color: var(--m);
+  }
+  .name {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .name a {
+    font: 700 0.95rem/1.2 var(--ap-font-display);
+    color: var(--ap-fg);
+  }
+  .here .name a {
+    color: var(--m);
+  }
+  .dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: var(--m);
+  }
+  .dot.planned {
+    background: transparent;
+    box-shadow: inset 0 0 0 1.5px var(--m);
+  }
+  .status {
+    font: 0.68rem/1.4 var(--ap-font-mono);
+    letter-spacing: 0.04em;
+    color: var(--ap-fg-3);
+  }
+  .line {
+    color: var(--ap-fg-2);
+  }
+  .links {
+    display: flex;
+    gap: 1rem;
+    font-family: var(--ap-font-mono);
+    font-size: 0.72rem;
+  }
+  .links a {
+    color: var(--ap-fg-3);
+    text-decoration: underline;
+    text-decoration-color: var(--ap-line);
+    text-underline-offset: 3px;
+  }
+  .links a:hover {
+    color: var(--m);
+    text-decoration-color: currentColor;
+  }
+  .fine {
+    font-size: 0.75rem;
+  }
+  .fine a {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+</style>

@@ -1,0 +1,56 @@
+---
+// A plain Astro page for each member, as a site without Starlight takes the
+// theme: base.css, the bar, the diagram highlighted for that member, and
+// the footer.
+import '@agentplot/site-theme/base.css';
+import FamilyBar from '@agentplot/site-theme/FamilyBar.astro';
+import FamilyFooter from '@agentplot/site-theme/FamilyFooter.astro';
+import Family from '@agentplot/site-theme/Family.astro';
+import { family, member, type MemberId } from '@agentplot/site-theme';
+
+export const getStaticPaths = () => family.map((m) => ({ params: { id: m.id } }));
+
+const m = member(Astro.params.id as MemberId);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{m.name} · site-theme demo</title>
+  </head>
+  <body>
+    <FamilyBar current={m.id} />
+    <main class="ap-wide">
+      <p class="eyebrow">{m.place} · {m.status}</p>
+      <h1>{m.name}</h1>
+      <p class="lede">{m.line}</p>
+      <Family highlight={m.id} />
+      <div class="ap-column">
+        <FamilyFooter current={m.id} />
+      </div>
+    </main>
+  </body>
+</html>
+
+<style>
+  main {
+    padding-block: 2rem 4rem;
+  }
+  .eyebrow {
+    margin: 0;
+    font: 500 0.75rem/1.6 var(--ap-font-mono);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ap-accent);
+  }
+  h1 {
+    margin: 0.2em 0 0.3em;
+  }
+  .lede {
+    max-width: var(--ap-measure);
+    margin: 0 0 2rem;
+    font-size: 1.15rem;
+  }
+</style>
