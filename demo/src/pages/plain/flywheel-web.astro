@@ -1,0 +1,61 @@
+---
+// How flywheel-web takes the theme: its own palette, dark only, mapped onto
+// the tokens, so the bar, the diagram and the footer wear its ground.
+import '@agentplot/site-theme/tokens.css';
+import FamilyBar from '@agentplot/site-theme/FamilyBar.astro';
+import FamilyFooter from '@agentplot/site-theme/FamilyFooter.astro';
+import Family from '@agentplot/site-theme/Family.astro';
+---
+
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Flywheel · site-theme demo</title>
+  </head>
+  <body>
+    <FamilyBar current="flywheel" />
+    <main>
+      <h1>The tools</h1>
+      <p>Each tool of the method, and how they turn together.</p>
+      <Family highlight="flywheel" />
+      <FamilyFooter current="flywheel" />
+    </main>
+  </body>
+</html>
+
+<style is:global>
+  /* flywheel-web's src/styles/site.css, its colours only. */
+  :root {
+    --ground: #0d2528;
+    --ground-2: #123236;
+    --ground-deep: #091c1f;
+    --bone: #ede7da;
+    --mint: #8fb9ae;
+    --ap-bg: var(--ground);
+    --ap-bg-2: var(--ground-deep);
+    --ap-bg-3: var(--ground-2);
+    --ap-line: rgba(143, 185, 174, 0.22);
+    --ap-line-soft: rgba(143, 185, 174, 0.13);
+    --ap-fg: var(--bone);
+    --ap-fg-1: var(--bone);
+    --ap-fg-2: rgba(237, 231, 218, 0.8);
+    --ap-fg-3: rgba(143, 185, 174, 0.78);
+  }
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ap-fg-2);
+    font: 18px/1.65 'Iowan Old Style', Charter, Georgia, serif;
+  }
+  main {
+    max-width: 72rem;
+    margin: 0 auto;
+    padding: 2rem 16px 4rem;
+  }
+  h1 {
+    font-family: var(--ap-font-display);
+    color: var(--ap-fg);
+  }
+</style>

@@ -55,7 +55,8 @@ interface Layout {
   ld: Pt;
   ldW: number;
   links: [Pt, Pt][];
-  /** The loop's last line, under the return lane. */
+  /** The return lane's height, and the loop's last line under it. */
+  lane: number;
   loop: Pt;
 }
 
@@ -64,7 +65,6 @@ const BOX = { w: 146, h: 90 };
 const MP_H = 190;
 const LD_BOX_H = 128;
 const MAIN_Y = 160; // main's line, under sluice's box
-const LANE = 300 - 82; // the return lane's depth below the stations' top, wide
 
 const wide: Layout = {
   key: 'w',
@@ -95,6 +95,7 @@ const wide: Layout = {
     [[634, 127], [656, 144]],
     [[634, 227], [656, 172]],
   ],
+  lane: 300,
   loop: [196, 328],
 };
 
@@ -127,6 +128,7 @@ const tall: Layout = {
     [[97, 542], [97, 582]],
     [[251, 542], [251, 582]],
   ],
+  lane: 790,
   loop: [24, 826],
 };
 
@@ -210,11 +212,11 @@ function bot([x, y]: Pt) {
 
 let instances = 0;
 
-export function draw(L: Layout): { svg: string; css: string } {
+function draw(L: Layout): { svg: string; css: string } {
   const s = new Sheet(L.key);
   const out: string[] = [];
   const put = (x: string) => out.push(x);
-  const at = (p: Pt, inner: string, cls = '') => `<g transform="translate(${p[0]} ${p[1]})"${cls ? ` class="${cls}"` : ''}>${inner}</g>`;
+  const at = (p: Pt, inner: string) => `<g transform="translate(${p[0]} ${p[1]})">${inner}</g>`;
   const fade = (id: string, a: number) => s.show(id, a, RESET);
 
   // The stations' slots, in the drawing's coordinates.
@@ -237,9 +239,8 @@ export function draw(L: Layout): { svg: string; css: string } {
   const mainY = L.ld[1] + MAIN_Y;
   const mx = (f: number) => Math.round(L.ld[0] + 14 + (L.ldW - 28) * f);
   const [x0, xa, xb] = [mx(0), mx(0.4), mx(0.8)];
-  const lane = L.key === 'w' ? L.hw[1] + LANE : mainY + 48;
   const row = L.hw[1] + 45;
-  const ret: Pt[] = [[xa, mainY + 27], [xa, lane], [10, lane], [10, row], [L.hw[0], row]];
+  const ret: Pt[] = [[xa, mainY + 27], [xa, L.lane], [10, L.lane], [10, row], [L.hw[0], row]];
 
   // The frame: Flywheel, the method the loop belongs to.
   put(`<rect class="fd-frame" width="${L.W}" height="${L.H}"/>`);

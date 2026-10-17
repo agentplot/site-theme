@@ -71,6 +71,14 @@ for (const scheme of ['light', 'dark'] as const) {
   }
 }
 
+// flywheel-web's palette mapped onto the tokens.
+for (const width of [1280, 390]) {
+  const page = await open('/plain/flywheel-web/', width, 'dark');
+  await at(page, 72);
+  await shot(page, `flywheel-web-${width}`);
+  await page.close();
+}
+
 // The diagram highlighted for each member, wide and tall.
 for (const id of ['flywheel', 'headwater', 'eddy', 'millpond', 'sluice']) {
   for (const [width, scheme] of [
