@@ -74,8 +74,8 @@ const here = find(Astro.props.current ?? starlightTitle(Astro.locals));
     font-weight: 700;
     color: var(--ap-fg);
   }
-  /* Two across on a phone, three in a documentation column, the whole
-     family in a row on a wide page. */
+  /* Two across on a phone, three in a documentation column, four on a wide
+     page. */
   ul {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -90,9 +90,9 @@ const here = find(Astro.props.current ?? starlightTitle(Astro.locals));
       column-gap: 1.5rem;
     }
   }
-  @container (min-width: 66rem) {
+  @container (min-width: 52rem) {
     ul {
-      grid-template-columns: repeat(6, minmax(0, 1fr));
+      grid-template-columns: repeat(4, minmax(0, 1fr));
     }
   }
   li {

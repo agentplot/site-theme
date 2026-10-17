@@ -114,30 +114,26 @@ const here = find(current ?? starlightTitle(Astro.locals));
     background: transparent;
     box-shadow: inset 0 0 0 1.5px var(--m);
   }
-  /* On a phone the whole family still fits across: the current member
-     keeps its dot, the others give theirs up, and each status stays in the
-     link's title and the footer. */
+  /* On a phone the whole family still fits across, down to 360 pixels: the
+     current member keeps its dot, the others give theirs up, and each
+     status stays in the link's title and the footer. */
   @media (max-width: 30rem) {
     .ap-bar {
-      font-size: 0.6875rem;
+      font-size: 0.625rem;
+      letter-spacing: -0.01em;
     }
     ul {
-      column-gap: 0.5rem;
-      padding-inline: 0.625rem;
+      column-gap: 0.4rem;
+      padding-inline: 0.5rem;
     }
     .umbrella {
-      padding-right: 0.5rem;
+      padding-right: 0.4rem;
     }
     a {
-      gap: 0.3rem;
+      gap: 0.25rem;
     }
     a:not([aria-current]) .dot {
       display: none;
-    }
-  }
-  @media (max-width: 23.5rem) {
-    .ap-bar {
-      font-size: 0.65625rem;
     }
   }
   .sr {

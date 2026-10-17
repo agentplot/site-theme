@@ -1,12 +1,12 @@
 // The one list of the family: every site's bar, footer and diagram read it,
 // and nothing else names a member, a URL or an accent. Order is the loop's:
-// the umbrella first, then what notices, the inbox, what works a question,
-// and what lands.
+// the umbrella first, then what notices, the inbox, what launches the work,
+// what works a question, and what lands.
 
-export type MemberId = 'flywheel' | 'headwater' | 'eddy' | 'millpond' | 'sounding' | 'sluice';
+export type MemberId = 'flywheel' | 'headwater' | 'eddy' | 'millpond' | 'flume' | 'sounding' | 'sluice';
 
 /** Where a member sits in the loop. */
-export type Place = 'umbrella' | 'notice' | 'inbox' | 'work' | 'land';
+export type Place = 'umbrella' | 'notice' | 'inbox' | 'launch' | 'work' | 'land';
 
 export type Status = 'in use' | 'designed, not built';
 
@@ -69,6 +69,16 @@ export const family: readonly Member[] = [
     site: `${pages}/millpond/`,
     book: `${pages}/blueprints/millpond/`,
     accent: { light: '#2160b0', dark: '#6ea8fe' },
+  },
+  {
+    id: 'flume',
+    name: 'flume',
+    line: 'Launches one agent in one worktree and tracks it until the work lands.',
+    place: 'launch',
+    status: 'designed, not built',
+    site: `${pages}/flume/`,
+    book: `${pages}/blueprints/flume/`,
+    accent: { light: '#2f6e7a', dark: '#7fb8c4' },
   },
   {
     id: 'sounding',

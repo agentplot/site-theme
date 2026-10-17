@@ -11,6 +11,7 @@ Flywheel its brass.
 | headwater | notice | designed, not built | `#a8442a` / `#ef8a6a` |
 | eddy | notice | designed, not built | `#6b4fd8` / `#a68cff` |
 | millpond | inbox | designed, not built | `#2160b0` / `#6ea8fe` |
+| flume | launch | designed, not built | `#2f6e7a` / `#7fb8c4` |
 | sounding | work | designed, not built | `#a3358f` / `#e486d2` |
 | sluice | land | in use | `#1f8a4c` / `#45c27a` |
 
@@ -120,18 +121,22 @@ tokens, so the bar, footer and diagram take its colours:
 
 One loop, from what is noticed to what lands. headwater and eddy notice
 events and print captures; millpond keeps them as an inbox, captures become
-signals, and curation joins signals into items; an item goes to one
-worktree or into a planner's plan, and a question to a sounding, whose
-accepted conclusion comes back to millpond as a new item; sluice tests the
-work as merged and lands it; and the landed bump moves the pin, so
-headwater stops reporting that release. Flywheel is the Method the loop belongs to.
+signals, and curation joins signals into items; millpond sends each item
+down flume, which launches one agent in one worktree for it and tidies the
+place once the work lands; an item is worked in its worktree or a
+planner's plan, and a question in a sounding, whose accepted conclusion
+comes back to millpond as a new item; sluice tests the work as merged and
+lands it; and the landed bump moves the pin, so headwater stops reporting
+that release. Flywheel is the Method the loop belongs to.
 
 It is CSS keyframes only (`src/diagram.ts`), a 20-second loop, so it moves
 with scripts off. It draws three copies and shows one by the figure's own
 width, so a site changes nothing to get the right one: wide, the stations in
-a row, from 44rem; square, the loop turning clockwise through four corners,
-from 32rem, which is the column of a Starlight page that keeps "On this
-page" (39.5rem at 1280 pixels); and tall below that, on a phone. Under
+a row with the flume standing between the inbox and the work, from 50rem;
+square, the stations down the page with the flume lying across and the
+three work stations side by side, from 32rem, which covers the column of a
+Starlight page that keeps "On this page" (39.5rem at 1280 pixels); and
+tall below that, on a phone. Under
 the drawing the five steps are text, each lit while it plays. A reader who
 asks for reduced motion gets the drawing stopped at the loop's last step,
 with every station holding what passed through it, and every step lit; a

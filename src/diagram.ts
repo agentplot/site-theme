@@ -9,20 +9,22 @@
 //      signal at once; a reader reads the meeting into three. Curation joins
 //      two of them into one item and makes the third, a question, an item of
 //      its own.
-//   3  The bump goes to one worktree, the export into a planner's plan, and
-//      the question to a sounding, whose accepted conclusion comes back to
-//      millpond as a new item.
-//   4  sluice tests each change as merged and lands both on main.
-//   5  The landed bump moves the pin back upstream, and headwater stops
+//   3  Each item runs down the flume, which launches one agent in one
+//      worktree for it, and tidies the place once the work lands.
+//   4  The bump is worked in one worktree, the export in a planner's plan,
+//      and the question in a sounding, whose accepted conclusion comes back
+//      to millpond as a new item.
+//   5  sluice tests each change as merged and lands both on main.
+//   6  The landed bump moves the pin back upstream, and headwater stops
 //      reporting the release.
 //
 // There are three drawings of the same loop, for three widths of column:
-// wide, the stations in a row with the return lane beneath; square, for a
-// documentation page's column, the loop turning clockwise through the four
-// corners; and tall, for a phone, the stations stacked with the return lane
-// up the left. Each station is drawn from its origin, so all three share
-// every station's insides and every keyframe of opacity; only the origins,
-// and so the moves, differ.
+// wide, the stations in a row with the flume standing between the inbox and
+// the work, and the return lane beneath; square, for a documentation page's
+// column, and tall, for a phone, the stations stacked with the flume lying
+// across under the inbox and the return lane up the left. Each station is
+// drawn from its origin, so all three share every station's insides and
+// every keyframe of opacity; only the origins, and so the moves, differ.
 
 import type { MemberId } from './family';
 
@@ -30,11 +32,12 @@ import type { MemberId } from './family';
 export const T = 20;
 /** The frame shown to a reader who asks for reduced motion, in percent. */
 export const STILL = 93;
-/** The five steps' windows, in percent, shared by the drawing and the captions. */
+/** The six steps' windows, in percent, shared by the drawing and the captions. */
 export const STEPS: [number, number][] = [
   [1, 20],
-  [20, 46],
-  [46, 64],
+  [20, 45],
+  [45, 52],
+  [52, 64],
   [64, 80],
   [80, 96],
 ];
@@ -56,6 +59,11 @@ interface Layout {
   ed: Pt;
   mp: Pt;
   mpW: number;
+  /** The flume: standing upright between the inbox and the work, or lying across. */
+  fl: Pt;
+  flW: number;
+  flH: number;
+  upright: boolean;
   wt: Pt;
   pl: Pt;
   /** The two work stations' width; the sounding has its own. */
@@ -73,8 +81,8 @@ interface Layout {
   loop: Pt;
 }
 
-// Every station's size; millpond, the work stations and sluice take their
-// width from the layout.
+// Every station's size; millpond, the flume, the work stations and sluice
+// take theirs from the layout.
 const BOX = { w: 146, h: 90 };
 const WK_H = 86;
 const MP_H = 190;
@@ -84,112 +92,128 @@ const MAIN_Y = 160; // main's line, under sluice's box
 const heads = (at: Pt[]): Layout['heads'] => [
   { n: 1, label: 'NOTICE', at: at[0], of: ['headwater', 'eddy'] },
   { n: 2, label: 'INBOX', at: at[1], of: ['millpond'] },
-  { n: 3, label: 'WORK', at: at[2], of: ['millpond', 'sounding'] },
-  { n: 4, label: 'LAND', at: at[3], of: ['sluice'] },
-  { n: 5, label: 'THE LOOP CLOSES', at: at[4], of: ['headwater'] },
+  { n: 3, label: 'LAUNCH', at: at[2], of: ['millpond', 'flume'] },
+  { n: 4, label: 'WORK', at: at[3], of: ['sounding'] },
+  { n: 5, label: 'LAND', at: at[4], of: ['sluice'] },
+  { n: 6, label: 'THE LOOP CLOSES', at: at[5], of: ['headwater'] },
 ];
 
-// The work column holds one worktree, a planner's plan and a sounding; the
-// sounding hands nothing on to sluice, and its conclusion goes back up into
-// millpond under the item it answers.
+// The flume stands between millpond and the work column; the sounding's
+// conclusion goes back under it, up into millpond under the item it answers.
 const wide: Layout = {
   key: 'w',
-  W: 812,
-  H: 424,
+  W: 920,
+  H: 436,
   title: [24, 34],
   sub: 'beside',
-  heads: heads([[24, 66], [192, 66], [488, 66], [656, 66], [24, 408]]),
+  heads: heads([[24, 66], [192, 66], [486, 66], [590, 66], [758, 66], [24, 420]]),
   hw: [24, 82],
   ed: [24, 182],
   mp: [192, 82],
   mpW: 274,
-  wt: [488, 82],
-  pl: [488, 176],
+  fl: [486, 82],
+  flW: 84,
+  flH: 274,
+  upright: true,
+  wt: [590, 82],
+  pl: [590, 176],
   wkW: 146,
-  sd: [488, 270],
+  sd: [590, 270],
   sdW: 146,
-  ld: [656, 82],
+  ld: [758, 82],
   ldW: 140,
   links: [
     [[170, 127], [192, 127]],
     [[170, 227], [192, 227]],
-    [[466, 148], [488, 125]],
-    [[466, 195], [488, 219]],
-    [[466, 232], [488, 300]],
-    [[634, 125], [656, 144]],
-    [[634, 219], [656, 172]],
+    [[466, 190], [486, 190]],
+    [[570, 125], [590, 125]],
+    [[570, 219], [590, 219]],
+    [[570, 313], [590, 313]],
+    [[736, 125], [758, 144]],
+    [[736, 219], [758, 172]],
   ],
-  back: [[488, 336], [430, 336], [430, 272]],
-  lane: 380,
-  loop: [196, 408],
+  back: [[663, 356], [663, 368], [430, 368], [430, 272]],
+  lane: 392,
+  loop: [196, 420],
 };
 
-// Clockwise: notice and the inbox across the top, then down to work, back
-// along the bottom to land, and up the left to headwater.
+// Down the page, for a documentation column: the flume lies across under
+// the inbox, the three work stations side by side under it, then sluice.
 const square: Layout = {
   key: 's',
   W: 520,
-  H: 688,
+  H: 798,
   title: [24, 34],
   sub: 'beside',
-  heads: heads([[24, 66], [192, 66], [320, 312], [24, 312], [24, 652]]),
+  heads: heads([[24, 66], [192, 66], [24, 302], [24, 388], [24, 516], [24, 762]]),
   hw: [24, 82],
   ed: [24, 182],
   mp: [192, 82],
-  mpW: 274,
-  wt: [320, 328],
-  pl: [320, 422],
+  mpW: 304,
+  fl: [24, 314],
+  flW: 472,
+  flH: 44,
+  upright: false,
+  wt: [24, 400],
+  pl: [186, 400],
   wkW: 146,
-  sd: [320, 516],
+  sd: [348, 400],
   sdW: 146,
-  ld: [24, 328],
-  ldW: 274,
+  ld: [24, 528],
+  ldW: 472,
   links: [
     [[170, 127], [192, 127]],
     [[170, 227], [192, 227]],
-    [[430, 272], [430, 328]],
-    [[466, 232], [484, 232], [484, 465], [466, 465]],
-    [[466, 232], [484, 232], [484, 559], [466, 559]],
-    [[320, 371], [298, 390]],
-    [[320, 465], [298, 418]],
+    [[447, 272], [447, 314]],
+    [[97, 358], [97, 400]],
+    [[259, 358], [259, 400]],
+    [[421, 358], [421, 400]],
+    [[97, 486], [97, 528]],
+    [[259, 486], [259, 528]],
   ],
-  back: [[466, 590], [502, 590], [502, 214], [466, 214]],
-  lane: 626,
-  loop: [24, 672],
+  back: [[494, 443], [508, 443], [508, 177], [496, 177]],
+  lane: 736,
+  loop: [24, 782],
 };
 
-// The sounding sits under the two work stations, between their lines down
-// to sluice, its question and its conclusion passing between them.
+// For a phone: the same, the sounding under the two other work stations
+// between their lines down to sluice; its conclusion crosses the plan's line
+// on its way back up the right.
 const tall: Layout = {
   key: 't',
-  W: 338,
-  H: 934,
+  W: 344,
+  H: 1024,
   title: [24, 34],
   sub: [24, 53],
-  heads: heads([[24, 80], [24, 210], [24, 440], [24, 662], [24, 900]]),
+  heads: heads([[24, 80], [24, 210], [24, 440], [24, 524], [24, 746], [24, 990]]),
   hw: [24, 92],
-  ed: [178, 92],
+  ed: [184, 92],
   mp: [24, 222],
-  mpW: 300,
-  wt: [24, 452],
-  pl: [184, 452],
-  wkW: 140,
-  sd: [104, 548],
+  mpW: 306,
+  fl: [24, 452],
+  flW: 306,
+  flH: 44,
+  upright: false,
+  wt: [24, 536],
+  pl: [188, 536],
+  wkW: 142,
+  sd: [112, 632],
   sdW: 130,
-  ld: [24, 674],
-  ldW: 300,
+  ld: [24, 758],
+  ldW: 306,
   links: [
     [[97, 182], [97, 222]],
-    [[251, 182], [251, 222]],
-    [[94, 412], [94, 452]],
-    [[254, 412], [254, 452]],
-    [[170, 412], [170, 548]],
-    [[94, 538], [94, 674]],
-    [[254, 538], [254, 674]],
+    [[257, 182], [257, 222]],
+    [[281, 412], [281, 452]],
+    [[95, 496], [95, 536]],
+    [[259, 496], [259, 536]],
+    [[177, 496], [177, 632]],
+    [[95, 622], [95, 758]],
+    [[259, 622], [259, 758]],
   ],
-  back: [[178, 548], [178, 412]],
-  lane: 882,
-  loop: [24, 918],
+  back: [[242, 690], [337, 690], [337, 300], [330, 300]],
+  lane: 966,
+  loop: [24, 1008],
 };
 
 // ---- keyframes ----------------------------------------------------------
@@ -341,7 +365,8 @@ function draw(L: Layout, shared: Set<string>): { svg: string; css: string } {
   put(`<text class="fd-m fd-sm" x="${L.loop[0]}" y="${L.loop[1]}">the landed bump moves the pin to 2026.10.10</text>`);
 
   // The loop: each station hands on to the next, and the return lane closes it.
-  put(L.links.map(arrow).join('') + arrow(L.back));
+  put(L.links.map(arrow).join(''));
+  put(`<polyline class="fd-halo" points="${L.back.map((p) => p.join(',')).join(' ')}"/>` + arrow(L.back));
   const d = 'M' + ret.map(([x, y]) => `${x},${y}`).join(' L');
   put(`<path class="fd-ret fd-loop" d="${d}"/>`);
   s.kf('retlit', [
@@ -403,6 +428,21 @@ function draw(L: Layout, shared: Set<string>): { svg: string; css: string } {
     put(tag('tagcu', 'curation', col[2], 35.5, 45));
   }
 
+  // flume: the channel every item runs down from millpond to its work, its
+  // water moving while it carries them.
+  {
+    const [x, y] = L.fl;
+    const flow = s.kf('flow', [[0, 'stroke-dashoffset:0'], [44.5, 'stroke-dashoffset:0'], [52.5, 'stroke-dashoffset:-48'], [100, 'stroke-dashoffset:-48']], false);
+    const lines = L.upright
+      ? [20, L.flW - 20].map((dx) => `<line class="fd-flow ${flow}" x1="${x + dx}" y1="${y + 40}" x2="${x + dx}" y2="${y + L.flH - 12}"/>`)
+      : [14, L.flH - 14].map((dy) => `<line class="fd-flow ${flow}" x1="${x + 70}" y1="${y + dy}" x2="${x + L.flW - 12}" y2="${y + dy}"/>`);
+    put(
+      `<g class="fd-st fd-of-flume"><rect class="fd-box" x="${x}" y="${y}" width="${L.flW}" height="${L.flH}" rx="8"/>` +
+        lines.join('') +
+        `<text class="fd-name" x="${x + 14}" y="${y + (L.upright ? 24 : 27)}">flume</text></g>`,
+    );
+  }
+
   // The work stations: one worktree, a planner's plan, and a sounding, which
   // works a question in a session of its own until it concludes.
   for (const [p, id, name, sub, w] of [
@@ -426,9 +466,10 @@ function draw(L: Layout, shared: Set<string>): { svg: string; css: string } {
         f(a + 2.2, 0.5, 0.9), f(a + 4.1, 2.1, 0), f(100, 0.5, 0)], false);
       return `<circle class="fd-ping ${name}" cx="${bx}" cy="${by - 1}" r="9"/>`;
     };
-    put(`<g class="fd-of-sounding">${ping('ping1', 55.5)}${ping('ping2', 56.5)}</g>`);
-    put(`<g class="${fade('sdbot', 55.5)}">${bot([bx, by])}</g>`);
-    put(`<text class="fd-xs fd-ok ${fade('sdok', 60.5)}" x="${L.sd[0] + 14}" y="${L.sd[1] + 81}">conclusion accepted</text>`);
+    put(`<g class="fd-of-sounding">${ping('ping1', 53)}${ping('ping2', 54)}</g>`);
+    put(`<g class="${fade('sdbot', 52.5)}">${bot([bx, by])}</g>`);
+    put(`<text class="fd-xs fd-ok ${fade('sdok', 58)}" x="${L.sd[0] + 14}" y="${L.sd[1] + 81}">conclusion accepted</text>`);
+    put(`<text class="fd-xs fd-m ${fade('tidy', 77.5)}" x="${L.wt[0] + 14}" y="${L.wt[1] + 66}">landed · tidied</text>`);
   }
 
   // sluice, and main beneath it.
@@ -543,8 +584,8 @@ function draw(L: Layout, shared: Set<string>): { svg: string; css: string } {
   token('capM', until(arrive(9.5, slot.edOut, slot.cap2, 5.5), dim(34.5, slot.cap2)), card('meeting'));
 
   for (const [id, a, p] of [
-    ['gh1', 47.5, slot.item1],
-    ['gh2', 49.5, slot.item2],
+    ['gh1', 45.5, slot.item1],
+    ['gh2', 47, slot.item2],
   ] as const) {
     const h = id === 'gh1' ? 20 : 34;
     put(
@@ -557,36 +598,37 @@ function draw(L: Layout, shared: Set<string>): { svg: string; css: string } {
   token('chgA', until(arrive(65, slot.wt, slot.laneA, 4)), change('bump mise'));
   token('chgB', until(arrive(67, add(slot.pl, 0, 7), slot.laneB, 4)), change('CSV export'));
 
-  // 3 · each item goes to one worktree, or into a planner's plan, and the
-  // question to a sounding; its accepted conclusion comes back to millpond,
-  // where the question was, as a new item.
+  // 3 · each item runs down the flume to its work: into the channel, along
+  // it to its station, and out; flume launches the agent there, and tidies
+  // the worktree once the bump has landed. 4 · the question's sounding
+  // concludes, and the conclusion comes back to millpond, where the question
+  // was, as a new item.
+  const flume = (from: Pt, to: Pt, h: number, t: number): Stop[] => {
+    const [x, y] = L.fl;
+    const [a, b]: Pt[] = L.upright
+      ? [[x + 7, from[1]], [x + 7, to[1]]]
+      : [[from[0], y + (L.flH - h) / 2], [to[0], y + (L.flH - h) / 2]];
+    return [
+      { t, at: from, o: 1, ease: true },
+      { t: t + 1, at: a, o: 1, ease: true },
+      { t: t + 2.5, at: b, o: 1, ease: true },
+      { t: t + 3.5, at: to, o: 1 },
+    ];
+  };
   token(
     'item1',
-    until(arrive(38, slot.sig[0], slot.item1), [
-      { t: 47, at: slot.item1, o: 1, ease: true },
-      { t: 52, at: slot.wt, o: 1 },
-    ]),
+    until(arrive(38, slot.sig[0], slot.item1), [...flume(slot.item1, slot.wt, 20, 45), ...dim(77, slot.wt, 0)]),
     item('bump mise'),
   );
   token(
     'item2',
-    until(arrive(40, add(slot.sig[1], 0, 6), slot.item2), [
-      { t: 49, at: slot.item2, o: 1, ease: true },
-      { t: 54, at: slot.pl, o: 1 },
-    ]),
+    until(arrive(40, add(slot.sig[1], 0, 6), slot.item2), flume(slot.item2, slot.pl, 34, 46.5)),
     item('CSV export', '2 signals'),
   );
-  token(
-    'item3',
-    until(arrive(42, slot.sig[3], slot.item3), [
-      { t: 50, at: slot.item3, o: 1, ease: true },
-      { t: 55, at: slot.sd, o: 1 },
-    ]),
-    item('Parquet?'),
-  );
-  put(`<g class="${fade('bot', 52.5)}">${bot(add(L.wt, L.wkW - 28, 70))}</g>`);
-  travel('concl', L.back, 60.5, 3.5, 'fd-concl');
-  put(`<g class="${fade('newit', 64.5)}">${at(slot.item3, item('Parquet'))}</g>`);
+  token('item3', until(arrive(42, slot.sig[3], slot.item3), flume(slot.item3, slot.sd, 20, 49)), item('Parquet?'));
+  put(`<g class="${s.show('bot', 49, 77)}">${bot(add(L.wt, L.wkW - 28, 70))}</g>`);
+  travel('concl', L.back, 58.5, 3.5, 'fd-concl');
+  put(`<g class="${fade('newit', 62)}">${at(slot.item3, item('Parquet'))}</g>`);
 
   // 5 · the landed bump moves the pin, back up the lane to headwater.
   travel('pin', ret, 81, 10, 'fd-pin');
@@ -597,7 +639,7 @@ function draw(L: Layout, shared: Set<string>): { svg: string; css: string } {
     `<title id="fd${n}-t">The Flywheel family: one loop from what is noticed to what lands</title>` +
     `<desc id="fd${n}-d">headwater reports a new release of mise and eddy lists a recorded planning call; each prints a capture, and millpond keeps both. ` +
     `The release is its own excerpt, so it becomes one signal; a reader reads the meeting into three signals. Curation joins two of them into one item and makes the third, a question, an item of its own. ` +
-    `The bump goes to one worktree, the export into a planner&#39;s plan, and the question to a sounding, whose accepted conclusion comes back to millpond as a new item. sluice tests each change as merged and lands both on main. ` +
+    `Each item runs down the flume, which launches one agent in one worktree for it: the bump in one worktree, the export in a planner&#39;s plan, and the question in a sounding, whose accepted conclusion comes back to millpond as a new item. sluice tests each change as merged and lands both on main, and flume tidies the bump&#39;s worktree. ` +
     `The landed bump moves the pin back to headwater, which stops reporting that release. Flywheel is the Method the whole loop belongs to.</desc>` +
     out.join('') +
     `</svg>`;

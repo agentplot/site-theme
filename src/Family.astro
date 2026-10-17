@@ -40,19 +40,26 @@ const { wide, square, tall, css } = diagram();
         <span class="fd-n">2</span>
         <span><b class="fd-of-millpond">millpond</b> keeps them as an inbox: captures become signals, and curation joins signals into items.</span>
       </li>
-      <li class="fd-cap fd-c-3 fd-step-millpond fd-step-sounding">
+      <li class="fd-cap fd-c-3 fd-step-millpond fd-step-flume">
         <span class="fd-n">3</span>
         <span>
-          <b class="fd-of-millpond">millpond</b> sends an item to one worktree, or a planner takes it into a plan. A
-          question goes to a <b class="fd-of-sounding">sounding</b>, whose conclusion comes back as new items.
+          <b class="fd-of-millpond">millpond</b> sends each item down <b class="fd-of-flume">flume</b>, which launches one agent in
+          one worktree for it, and tidies the place once the work lands.
         </span>
       </li>
-      <li class="fd-cap fd-c-4 fd-step-sluice">
+      <li class="fd-cap fd-c-4 fd-step-sounding">
         <span class="fd-n">4</span>
+        <span>
+          An item is worked in its worktree or a planner's plan. A question goes to a <b class="fd-of-sounding">sounding</b>,
+          whose conclusion comes back as new items.
+        </span>
+      </li>
+      <li class="fd-cap fd-c-5 fd-step-sluice">
+        <span class="fd-n">5</span>
         <span><b class="fd-of-sluice">sluice</b> tests the work as merged and lands it.</span>
       </li>
-      <li class="fd-cap fd-c-5 fd-step-headwater">
-        <span class="fd-n">5</span>
+      <li class="fd-cap fd-c-6 fd-step-headwater">
+        <span class="fd-n">6</span>
         <span>The landed bump moves the pin, so <b class="fd-of-headwater">headwater</b> stops reporting that release.</span>
       </li>
     </ol>
@@ -105,7 +112,7 @@ const { wide, square, tall, css } = diagram();
     }
   }
 
-  /* By the figure's width: the wide drawing from 44rem, the square one from
+  /* By the figure's width: the wide drawing from 50rem, the square one from
      32rem, which is a documentation page's column beside Starlight's "On
      this page", and the tall one below, on a phone. The others keep playing
      out of sight, so a turned phone stays in step with the steps. */
@@ -122,7 +129,7 @@ const { wide, square, tall, css } = diagram();
     max-width: 30rem;
     margin-inline: auto;
   }
-  @container (min-width: 44rem) {
+  @container (min-width: 50rem) {
     .fd-square,
     .fd-tall {
       visibility: hidden;
@@ -130,7 +137,7 @@ const { wide, square, tall, css } = diagram();
       overflow: hidden;
     }
   }
-  @container (min-width: 32rem) and (max-width: 43.99rem) {
+  @container (min-width: 32rem) and (max-width: 49.99rem) {
     .fd-wide,
     .fd-tall {
       visibility: hidden;
@@ -153,6 +160,7 @@ const { wide, square, tall, css } = diagram();
   .fd-hl-headwater .fd-of-headwater,
   .fd-hl-eddy .fd-of-eddy,
   .fd-hl-millpond .fd-of-millpond,
+  .fd-hl-flume .fd-of-flume,
   .fd-hl-sounding .fd-of-sounding,
   .fd-hl-sluice .fd-of-sluice {
     --fd-on: var(--fd-hi);
@@ -162,6 +170,7 @@ const { wide, square, tall, css } = diagram();
   .fd-hl-headwater .fd-step-headwater .fd-n,
   .fd-hl-eddy .fd-step-eddy .fd-n,
   .fd-hl-millpond .fd-step-millpond .fd-n,
+  .fd-hl-flume .fd-step-flume .fd-n,
   .fd-hl-sounding .fd-step-sounding .fd-n,
   .fd-hl-sluice .fd-step-sluice .fd-n {
     background: var(--fd-hi);
@@ -327,6 +336,19 @@ const { wide, square, tall, css } = diagram();
   .fd-concl {
     fill: var(--fd-ok);
   }
+  /* The flume's water, moving while it carries the items. */
+  .fd-flow {
+    stroke: var(--fd-on, var(--fd-muted));
+    stroke-width: 1.2;
+    stroke-dasharray: 10 14;
+    opacity: 0.55;
+  }
+  /* Where the conclusion's way back crosses a line, the line breaks. */
+  .fd-halo {
+    fill: none;
+    stroke: var(--fd-bg);
+    stroke-width: 6;
+  }
   /* The sounding's session at work: rings going out, as a sounding line's. */
   .fd-ping {
     fill: none;
@@ -392,9 +414,9 @@ const { wide, square, tall, css } = diagram();
     color: var(--ap-bg);
     font: 700 0.68rem/1 var(--ap-font-sans);
   }
-  @container (min-width: 44rem) {
+  @container (min-width: 50rem) {
     .fd-steps {
-      grid-template-columns: repeat(5, 1fr);
+      grid-template-columns: repeat(6, 1fr);
       gap: 1.1rem;
     }
     .fd-cap {
