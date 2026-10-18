@@ -35,7 +35,7 @@ Beside the accent, three tokens show a state, the same on every site:
 | `@agentplot/site-theme/base.css` | the tokens plus a page, headings and a column (`.ap-column`, `.ap-wide`), for a plain site with no stylesheet of its own |
 | `@agentplot/site-theme/starlight.css` | the tokens mapped onto Starlight's colours and type (its caution is `--ap-warn`), room for the bar in its header, and the mark's size |
 | `@agentplot/site-theme/FamilyBar.astro` | the strip naming the family, the current member marked; it also sets `--ap-accent` from the list |
-| `@agentplot/site-theme/FamilyFooter.astro` | each member with its line, status, site and design book |
+| `@agentplot/site-theme/FamilyFooter.astro` | each member with its line, status, site, and its design book where it has one |
 | `@agentplot/site-theme/Family.astro` | the animated diagram; `highlight` names the member drawn in its accent |
 | `@agentplot/site-theme/starlight/Header.astro` | Starlight's header with the bar above it |
 | `@agentplot/site-theme/starlight/Footer.astro` | Starlight's footer, then the family's |

@@ -23,7 +23,8 @@ export interface Member {
   place: Place;
   status: Status;
   site: string;
-  book: string;
+  /** Its public design book; Flywheel's design is private, so it has none. */
+  book?: string;
   accent: Pair;
 }
 
@@ -37,7 +38,6 @@ export const family: readonly Member[] = [
     place: 'umbrella',
     status: 'in use',
     site: `${pages}/flywheel-web/`,
-    book: `${pages}/blueprints/flywheel/`,
     accent: { light: '#7d6110', dark: '#c9a227' },
   },
   {

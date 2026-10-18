@@ -34,7 +34,7 @@ const here = find(Astro.props.current ?? starlightTitle(Astro.locals));
           <p class="line">{m.line}</p>
           <p class="links">
             <a href={m.site}>Site</a>
-            <a href={m.book}>Design book</a>
+            {m.book && <a href={m.book}>Design book</a>}
           </p>
         </li>
       ))
