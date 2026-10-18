@@ -144,19 +144,17 @@ button pauses it for anyone else.
 
 ## Installing
 
-Until it is published, a site depends on this checkout:
-
-```json
-"@agentplot/site-theme": "file:/Users/chuck/Code/github_agentplot/site-theme/main"
-```
-
-bun links each of the package's files into the site, so an edit shows at
-once and a new file needs `bun install` again. Once the repository is on
-GitHub and tagged:
+A site takes the theme from GitHub at a tag:
 
 ```json
 "@agentplot/site-theme": "github:agentplot/site-theme#v0.1.0"
 ```
+
+To work on the theme beside a site, point the site at a local checkout for
+a while (`"file:<path to the checkout>"`). bun links each of the package's
+files into the site, so an edit shows at once and a new file needs
+`bun install` again. Tag the theme and return the site to the tag before
+it lands.
 
 The package ships its source: `.astro`, `.ts` and `.css` that the site's
 Astro compiles. It needs `astro` 7.2 or later, and `@astrojs/starlight` 0.42
