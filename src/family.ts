@@ -1,12 +1,12 @@
 // The one list of the family: every site's bar, footer and diagram read it,
 // and nothing else names a member, a URL or an accent. Order is the loop's:
 // the umbrella first, then what notices, the inbox, what launches the work,
-// what works a question, and what lands.
+// what works a question, what lands, and what delivers.
 
-export type MemberId = 'flywheel' | 'headwater' | 'eddy' | 'millpond' | 'flume' | 'sounding' | 'sluice';
+export type MemberId = 'flywheel' | 'headwater' | 'eddy' | 'millpond' | 'flume' | 'sounding' | 'sluice' | 'tailrace';
 
 /** Where a member sits in the loop. */
-export type Place = 'umbrella' | 'notice' | 'inbox' | 'launch' | 'work' | 'land';
+export type Place = 'umbrella' | 'notice' | 'inbox' | 'launch' | 'work' | 'land' | 'deliver';
 
 export type Status = 'in use' | 'designed, not built';
 
@@ -99,6 +99,16 @@ export const family: readonly Member[] = [
     site: `${pages}/sluice/`,
     book: `${pages}/blueprints/sluice/`,
     accent: { light: '#1f8a4c', dark: '#45c27a' },
+  },
+  {
+    id: 'tailrace',
+    name: 'tailrace',
+    line: 'Build once, sign everything, promote with proof, in your own account.',
+    place: 'deliver',
+    status: 'designed, not built',
+    site: `${pages}/tailrace/`,
+    book: `${pages}/blueprints/tailrace/`,
+    accent: { light: '#1d7368', dark: '#3cc4ad' },
   },
 ];
 

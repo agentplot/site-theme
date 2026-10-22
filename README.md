@@ -14,6 +14,7 @@ Flywheel its brass.
 | flume | launch | designed, not built | `#2f6e7a` / `#7fb8c4` |
 | sounding | work | designed, not built | `#a3358f` / `#e486d2` |
 | sluice | land | in use | `#1f8a4c` / `#45c27a` |
+| tailrace | deliver | designed, not built | `#1d7368` / `#3cc4ad` |
 
 Every accent meets 4.5:1 against its theme's page, except sluice's light
 green, which is sluice's own (4.05:1).

@@ -106,7 +106,7 @@ for (const width of [1280, 390]) {
 }
 
 // The diagram highlighted for each member, wide and tall.
-for (const id of ['flywheel', 'headwater', 'eddy', 'millpond', 'flume', 'sounding', 'sluice']) {
+for (const id of ['flywheel', 'headwater', 'eddy', 'millpond', 'flume', 'sounding', 'sluice', 'tailrace']) {
   for (const [width, scheme] of [
     [1280, 'dark'],
     [1280, 'light'],
