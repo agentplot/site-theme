@@ -2,7 +2,7 @@
 // The family diagram: one loop from what is noticed to what lands, with the
 // tool whose site shows it in its accent and the others in ink. The drawing
 // is src/diagram.ts; this places its wide, square and tall copies, one shown
-// by the figure's width, and the five steps as text under them, each lit
+// by the figure's width, and the seven steps as text under them, each lit
 // while the drawing plays it.
 import './tokens.css';
 import { member, type MemberId } from './family';
@@ -58,8 +58,15 @@ const { wide, square, tall, css } = diagram();
         <span class="fd-n">5</span>
         <span><b class="fd-of-sluice">sluice</b> tests the work as merged and lands it.</span>
       </li>
-      <li class="fd-cap fd-c-6 fd-step-headwater">
+      <li class="fd-cap fd-c-6 fd-step-tailrace">
         <span class="fd-n">6</span>
+        <span>
+          <b class="fd-of-tailrace">tailrace</b> publishes the landing: signed, with its verdict attached; beta moves, and
+          environments converge.
+        </span>
+      </li>
+      <li class="fd-cap fd-c-7 fd-step-headwater">
+        <span class="fd-n">7</span>
         <span>The landed bump moves the pin, so <b class="fd-of-headwater">headwater</b> stops reporting that release.</span>
       </li>
     </ol>
@@ -162,7 +169,8 @@ const { wide, square, tall, css } = diagram();
   .fd-hl-millpond .fd-of-millpond,
   .fd-hl-flume .fd-of-flume,
   .fd-hl-sounding .fd-of-sounding,
-  .fd-hl-sluice .fd-of-sluice {
+  .fd-hl-sluice .fd-of-sluice,
+  .fd-hl-tailrace .fd-of-tailrace {
     --fd-on: var(--fd-hi);
     --fd-on-fill: var(--fd-tint);
     --fd-on-width: 2;
@@ -172,7 +180,8 @@ const { wide, square, tall, css } = diagram();
   .fd-hl-millpond .fd-step-millpond .fd-n,
   .fd-hl-flume .fd-step-flume .fd-n,
   .fd-hl-sounding .fd-step-sounding .fd-n,
-  .fd-hl-sluice .fd-step-sluice .fd-n {
+  .fd-hl-sluice .fd-step-sluice .fd-n,
+  .fd-hl-tailrace .fd-step-tailrace .fd-n {
     background: var(--fd-hi);
   }
   .fd.fd-hl-flywheel {
@@ -372,8 +381,8 @@ const { wide, square, tall, css } = diagram();
     fill: var(--fd-panel);
   }
 
-  /* The steps, as text: five across under the wide drawing, a list under the
-     tall one. */
+  /* The steps, as text: seven across under the wide drawing, a list under
+     the tall one. */
   .fd-caption {
     position: relative;
     padding: 0.9rem var(--ap-gutter) 1rem;
@@ -416,7 +425,7 @@ const { wide, square, tall, css } = diagram();
   }
   @container (min-width: 50rem) {
     .fd-steps {
-      grid-template-columns: repeat(6, 1fr);
+      grid-template-columns: repeat(7, 1fr);
       gap: 1.1rem;
     }
     .fd-cap {

@@ -127,8 +127,10 @@ down flume, which launches one agent in one worktree for it and tidies the
 place once the work lands; an item is worked in its worktree or a
 planner's plan, and a question in a sounding, whose accepted conclusion
 comes back to millpond as a new item; sluice tests the work as merged and
-lands it; and the landed bump moves the pin, so headwater stops reporting
-that release. Flywheel is the Method the loop belongs to.
+lands it; tailrace publishes the landing, signed with its verdict attached,
+so beta moves and environments converge; and the landed bump moves the
+pin, so headwater stops reporting that release. Flywheel is the Method the
+loop belongs to.
 
 It is CSS keyframes only (`src/diagram.ts`), a 20-second loop, so it moves
 with scripts off. It draws three copies and shows one by the figure's own
@@ -138,7 +140,7 @@ square, the stations down the page with the flume lying across and the
 three work stations side by side, from 32rem, which covers the column of a
 Starlight page that keeps "On this page" (39.5rem at 1280 pixels); and
 tall below that, on a phone. Under
-the drawing the five steps are text, each lit while it plays. A reader who
+the drawing the seven steps are text, each lit while it plays. A reader who
 asks for reduced motion gets the drawing stopped at the loop's last step,
 with every station holding what passed through it, and every step lit; a
 button pauses it for anyone else.

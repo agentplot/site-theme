@@ -15,7 +15,9 @@
 //      and the question in a sounding, whose accepted conclusion comes back
 //      to millpond as a new item.
 //   5  sluice tests each change as merged and lands both on main.
-//   6  The landed bump moves the pin back upstream, and headwater stops
+//   6  tailrace publishes what landed: the artifact signed, its verdict
+//      attached, and beta moves to it.
+//   7  The landed bump moves the pin back upstream, and headwater stops
 //      reporting the release.
 //
 // There are three drawings of the same loop, for three widths of column:
@@ -32,14 +34,15 @@ import type { MemberId } from './family';
 export const T = 20;
 /** The frame shown to a reader who asks for reduced motion, in percent. */
 export const STILL = 93;
-/** The six steps' windows, in percent, shared by the drawing and the captions. */
+/** The seven steps' windows, in percent, shared by the drawing and the captions. */
 export const STEPS: [number, number][] = [
   [1, 20],
   [20, 45],
   [45, 52],
   [52, 64],
-  [64, 80],
-  [80, 96],
+  [64, 76],
+  [76, 84],
+  [84, 96],
 ];
 
 const E = 0.8; // fade width, percent
@@ -72,6 +75,9 @@ interface Layout {
   sdW: number;
   ld: Pt;
   ldW: number;
+  /** tailrace, under main; the return lane passes behind it. */
+  tr: Pt;
+  trW: number;
   /** Each station's hand-on to the next, as a line through its points. */
   links: Pt[][];
   /** The sounding's conclusion, back to millpond as a new item. */
@@ -88,6 +94,7 @@ const WK_H = 86;
 const MP_H = 190;
 const LD_BOX_H = 128;
 const MAIN_Y = 160; // main's line, under sluice's box
+const TR_H = 98;
 
 const heads = (at: Pt[]): Layout['heads'] => [
   { n: 1, label: 'NOTICE', at: at[0], of: ['headwater', 'eddy'] },
@@ -95,18 +102,21 @@ const heads = (at: Pt[]): Layout['heads'] => [
   { n: 3, label: 'LAUNCH', at: at[2], of: ['millpond', 'flume'] },
   { n: 4, label: 'WORK', at: at[3], of: ['sounding'] },
   { n: 5, label: 'LAND', at: at[4], of: ['sluice'] },
-  { n: 6, label: 'THE LOOP CLOSES', at: at[5], of: ['headwater'] },
+  { n: 6, label: 'DELIVER', at: at[5], of: ['tailrace'] },
+  { n: 7, label: 'THE LOOP CLOSES', at: at[6], of: ['headwater'] },
 ];
 
 // The flume stands between millpond and the work column; the sounding's
 // conclusion goes back under it, up into millpond under the item it answers.
+// tailrace sits under main, where the merges' labels leave no room for its
+// step's head, so that head is on the loop's last line, under the lane.
 const wide: Layout = {
   key: 'w',
   W: 920,
-  H: 436,
+  H: 456,
   title: [24, 34],
   sub: 'beside',
-  heads: heads([[24, 66], [192, 66], [486, 66], [590, 66], [758, 66], [24, 420]]),
+  heads: heads([[24, 66], [192, 66], [486, 66], [590, 66], [758, 66], [758, 440], [24, 440]]),
   hw: [24, 82],
   ed: [24, 182],
   mp: [192, 82],
@@ -122,6 +132,8 @@ const wide: Layout = {
   sdW: 146,
   ld: [758, 82],
   ldW: 140,
+  tr: [758, 290],
+  trW: 140,
   links: [
     [[170, 127], [192, 127]],
     [[170, 227], [192, 227]],
@@ -133,19 +145,20 @@ const wide: Layout = {
     [[736, 219], [758, 172]],
   ],
   back: [[663, 356], [663, 368], [430, 368], [430, 272]],
-  lane: 392,
-  loop: [196, 420],
+  lane: 412,
+  loop: [196, 440],
 };
 
 // Down the page, for a documentation column: the flume lies across under
-// the inbox, the three work stations side by side under it, then sluice.
+// the inbox, the three work stations side by side under it, then sluice,
+// then tailrace across under main.
 const square: Layout = {
   key: 's',
   W: 520,
-  H: 798,
+  H: 934,
   title: [24, 34],
   sub: 'beside',
-  heads: heads([[24, 66], [192, 66], [24, 302], [24, 388], [24, 516], [24, 762]]),
+  heads: heads([[24, 66], [192, 66], [24, 302], [24, 388], [24, 516], [24, 738], [24, 898]]),
   hw: [24, 82],
   ed: [24, 182],
   mp: [192, 82],
@@ -161,6 +174,8 @@ const square: Layout = {
   sdW: 146,
   ld: [24, 528],
   ldW: 472,
+  tr: [24, 750],
+  trW: 472,
   links: [
     [[170, 127], [192, 127]],
     [[170, 227], [192, 227]],
@@ -172,8 +187,8 @@ const square: Layout = {
     [[259, 486], [259, 528]],
   ],
   back: [[494, 443], [508, 443], [508, 177], [496, 177]],
-  lane: 736,
-  loop: [24, 782],
+  lane: 872,
+  loop: [24, 918],
 };
 
 // For a phone: the same, the sounding under the two other work stations
@@ -182,10 +197,10 @@ const square: Layout = {
 const tall: Layout = {
   key: 't',
   W: 344,
-  H: 1024,
+  H: 1162,
   title: [24, 34],
   sub: [24, 53],
-  heads: heads([[24, 80], [24, 210], [24, 440], [24, 524], [24, 746], [24, 990]]),
+  heads: heads([[24, 80], [24, 210], [24, 440], [24, 524], [24, 746], [24, 968], [24, 1128]]),
   hw: [24, 92],
   ed: [184, 92],
   mp: [24, 222],
@@ -201,6 +216,8 @@ const tall: Layout = {
   sdW: 130,
   ld: [24, 758],
   ldW: 306,
+  tr: [24, 980],
+  trW: 306,
   links: [
     [[97, 182], [97, 222]],
     [[257, 182], [257, 222]],
@@ -212,8 +229,8 @@ const tall: Layout = {
     [[259, 622], [259, 758]],
   ],
   back: [[242, 690], [337, 690], [337, 300], [330, 300]],
-  lane: 966,
-  loop: [24, 1008],
+  lane: 1102,
+  loop: [24, 1146],
 };
 
 // ---- keyframes ----------------------------------------------------------
@@ -287,8 +304,8 @@ function arrow(pts: Pt[]) {
 
 const card = (label: string) =>
   `<rect class="fd-card" width="72" height="22" rx="4"/><text class="fd-mono" x="8" y="15">${label}</text>`;
-const chip = (label: string) =>
-  `<rect class="fd-chip" width="76" height="18" rx="9"/><text class="fd-mono fd-10" x="9" y="12.6">${label}</text>`;
+const chip = (label: string, w = 76) =>
+  `<rect class="fd-chip" width="${w}" height="18" rx="9"/><text class="fd-mono fd-10" x="9" y="12.6">${label}</text>`;
 const item = (label: string, sub?: string) =>
   `<rect class="fd-item" width="70" height="${sub ? 34 : 20}" rx="4"/>` +
   `<text class="fd-mono fd-10 fd-ink" x="7" y="14">${label}</text>` +
@@ -331,6 +348,7 @@ function draw(L: Layout, shared: Set<string>): { svg: string; css: string } {
     sd: add(L.sd, 10, 48),
     laneA: add(L.ld, 10, 52),
     laneB: add(L.ld, 10, 80),
+    tr: add(L.tr, 10, 48),
   };
   const mainY = L.ld[1] + MAIN_Y;
   const mx = (f: number) => Math.round(L.ld[0] + 14 + (L.ldW - 28) * f);
@@ -364,15 +382,17 @@ function draw(L: Layout, shared: Set<string>): { svg: string; css: string } {
   }
   put(`<text class="fd-m fd-sm" x="${L.loop[0]}" y="${L.loop[1]}">the landed bump moves the pin to 2026.10.10</text>`);
 
-  // The loop: each station hands on to the next, and the return lane closes it.
+  // The loop: each station hands on to the next, main's head hands on down
+  // to tailrace from under its merge's label, and the return lane closes it.
   put(L.links.map(arrow).join(''));
+  put(arrow([[xb, mainY + 25], [xb, L.tr[1]]]));
   put(`<polyline class="fd-halo" points="${L.back.map((p) => p.join(',')).join(' ')}"/>` + arrow(L.back));
   const d = 'M' + ret.map(([x, y]) => `${x},${y}`).join(' L');
   put(`<path class="fd-ret fd-loop" d="${d}"/>`);
   s.kf('retlit', [
     [0, 'stroke-dashoffset:1;opacity:1'],
-    [81, 'stroke-dashoffset:1;opacity:1'],
-    [91, 'stroke-dashoffset:0;opacity:1'],
+    [84, 'stroke-dashoffset:1;opacity:1'],
+    [92, 'stroke-dashoffset:0;opacity:1'],
     [RESET, 'stroke-dashoffset:0;opacity:1'],
     [RESET + 1.5, 'stroke-dashoffset:0;opacity:0'],
     [98, 'stroke-dashoffset:1;opacity:0'],
@@ -469,7 +489,7 @@ function draw(L: Layout, shared: Set<string>): { svg: string; css: string } {
     put(`<g class="fd-of-sounding">${ping('ping1', 53)}${ping('ping2', 54)}</g>`);
     put(`<g class="${fade('sdbot', 52.5)}">${bot([bx, by])}</g>`);
     put(`<text class="fd-xs fd-ok ${fade('sdok', 58)}" x="${L.sd[0] + 14}" y="${L.sd[1] + 81}">conclusion accepted</text>`);
-    put(`<text class="fd-xs fd-m ${fade('tidy', 77.5)}" x="${L.wt[0] + 14}" y="${L.wt[1] + 66}">landed · tidied</text>`);
+    put(`<text class="fd-xs fd-m ${fade('tidy', 74.5)}" x="${L.wt[0] + 14}" y="${L.wt[1] + 66}">landed · tidied</text>`);
   }
 
   // sluice, and main beneath it.
@@ -485,8 +505,8 @@ function draw(L: Layout, shared: Set<string>): { svg: string; css: string } {
         `<text class="fd-xs fd-m" x="${x + 14}" y="${y + 116}">lands what passed</text></g>`,
     );
     for (const [id, yy, a, b] of [
-      ['barA', 59, 69, 74],
-      ['barB', 87, 70.5, 76],
+      ['barA', 59, 68, 72],
+      ['barB', 87, 69.5, 73.5],
     ] as const) {
       // Every frame names every property: one left out is interpolated
       // from the frames that name it, across the whole loop.
@@ -506,8 +526,8 @@ function draw(L: Layout, shared: Set<string>): { svg: string; css: string } {
     put(`<line class="fd-edge" x1="${x + 4}" y1="${mainY}" x2="${x + L.ldW - 4}" y2="${mainY}"/>`);
     put(`<circle class="fd-commit" cx="${x0}" cy="${mainY}" r="4"/>`);
     for (const [id, cx, label, a] of [
-      ['mA', xa, 'mise', 75.5],
-      ['mB', xb, 'CSV', 78.5],
+      ['mA', xa, 'mise', 73.5],
+      ['mB', xb, 'CSV', 75],
     ] as const) {
       put(
         `<g class="${fade(id, a)}"><circle class="fd-merge" cx="${cx}" cy="${mainY}" r="6.5"/>` +
@@ -516,10 +536,10 @@ function draw(L: Layout, shared: Set<string>): { svg: string; css: string } {
       );
     }
     const head = s.move('head', [
-      { t: 75, at: [x0, 0], o: 1, ease: true },
-      { t: 76, at: [xa, 0], o: 1 },
-      { t: 78.5, at: [xa, 0], o: 1, ease: true },
-      { t: 79.5, at: [xb, 0], o: 1 },
+      { t: 73, at: [x0, 0], o: 1, ease: true },
+      { t: 74, at: [xa, 0], o: 1 },
+      { t: 75, at: [xa, 0], o: 1, ease: true },
+      { t: 76, at: [xb, 0], o: 1 },
       { t: RESET, at: [xb, 0], o: 1, ease: true },
       { t: 99, at: [x0, 0], o: 1 },
     ]);
@@ -595,8 +615,8 @@ function draw(L: Layout, shared: Set<string>): { svg: string; css: string } {
   }
 
   // 4 · the work goes to sluice, is tested as merged, and lands on main.
-  token('chgA', until(arrive(65, slot.wt, slot.laneA, 4)), change('bump mise'));
-  token('chgB', until(arrive(67, add(slot.pl, 0, 7), slot.laneB, 4)), change('CSV export'));
+  token('chgA', until(arrive(65, slot.wt, slot.laneA, 3)), change('bump mise'));
+  token('chgB', until(arrive(66.5, add(slot.pl, 0, 7), slot.laneB, 3)), change('CSV export'));
 
   // 3 · each item runs down the flume to its work: into the channel, along
   // it to its station, and out; flume launches the agent there, and tidies
@@ -617,7 +637,7 @@ function draw(L: Layout, shared: Set<string>): { svg: string; css: string } {
   };
   token(
     'item1',
-    until(arrive(38, slot.sig[0], slot.item1), [...flume(slot.item1, slot.wt, 20, 45), ...dim(77, slot.wt, 0)]),
+    until(arrive(38, slot.sig[0], slot.item1), [...flume(slot.item1, slot.wt, 20, 45), ...dim(74, slot.wt, 0)]),
     item('bump mise'),
   );
   token(
@@ -626,12 +646,40 @@ function draw(L: Layout, shared: Set<string>): { svg: string; css: string } {
     item('CSV export', '2 signals'),
   );
   token('item3', until(arrive(42, slot.sig[3], slot.item3), flume(slot.item3, slot.sd, 20, 49)), item('Parquet?'));
-  put(`<g class="${s.show('bot', 49, 77)}">${bot(add(L.wt, L.wkW - 28, 70))}</g>`);
+  put(`<g class="${s.show('bot', 49, 74)}">${bot(add(L.wt, L.wkW - 28, 70))}</g>`);
   travel('concl', L.back, 58.5, 3.5, 'fd-concl');
   put(`<g class="${fade('newit', 62)}">${at(slot.item3, item('Parquet'))}</g>`);
 
-  // 5 · the landed bump moves the pin, back up the lane to headwater.
-  travel('pin', ret, 81, 10, 'fd-pin');
+  // 7 · the landed bump moves the pin, back up the lane to headwater. The
+  // lane passes behind tailrace, so the station is drawn after the pin.
+  travel('pin', ret, 84, 8, 'fd-pin');
+
+  // tailrace: what landed, published. 6 · the landing comes down from main's
+  // head, is signed with its verdict attached, and beta moves to it.
+  {
+    const [x, y] = L.tr;
+    put(
+      `<g class="fd-st fd-of-tailrace"><rect class="fd-box" x="${x}" y="${y}" width="${L.trW}" height="${TR_H}" rx="8"/>` +
+        `<text class="fd-name" x="${x + 14}" y="${y + 24}">tailrace</text>` +
+        `<text class="fd-xs fd-m" x="${x + 14}" y="${y + 40}">publishes what landed</text></g>`,
+    );
+    token(
+      'dlv',
+      until(arrive(76.5, [xb - 38, mainY - 10], slot.tr, 3), dim(79.5, slot.tr, 0)),
+      change('bump mise'),
+    );
+    put(`<g class="${fade('trchip', 80)}">${at(slot.tr, chip('mise · signed', 92))}</g>`);
+    // beta: muted until the channel moves to the signed artifact.
+    const lit = (id: string, off: string, on: string) =>
+      s.kf(id, [[0, off], [82.5, off], [83, on], [RESET, on], [98, off], [100, off]], false);
+    const betaR = lit('betar', 'fill:var(--fd-soft)', 'fill:var(--fd-ok)');
+    const betaT = lit('betat', 'fill:var(--fd-muted)', 'fill:var(--fd-ink)');
+    put(
+      `<g class="${fade('trpill', 81.5)}"><rect class="${betaR}" x="${x + 10}" y="${y + 72}" width="38" height="16" rx="8"/>` +
+        `<text class="fd-pillt ${betaT}" x="${x + 29}" y="${y + 83.5}" text-anchor="middle">beta</text>` +
+        `<text class="fd-xs fd-m" x="${x + 56}" y="${y + 84}">envs converge</text></g>`,
+    );
+  }
 
   const n = ++instances;
   const svg =
@@ -640,6 +688,7 @@ function draw(L: Layout, shared: Set<string>): { svg: string; css: string } {
     `<desc id="fd${n}-d">headwater reports a new release of mise and eddy lists a recorded planning call; each prints a capture, and millpond keeps both. ` +
     `The release is its own excerpt, so it becomes one signal; a reader reads the meeting into three signals. Curation joins two of them into one item and makes the third, a question, an item of its own. ` +
     `Each item runs down the flume, which launches one agent in one worktree for it: the bump in one worktree, the export in a planner&#39;s plan, and the question in a sounding, whose accepted conclusion comes back to millpond as a new item. sluice tests each change as merged and lands both on main, and flume tidies the bump&#39;s worktree. ` +
+    `tailrace publishes the landing: signed, with its verdict attached; beta moves to it, and environments converge. ` +
     `The landed bump moves the pin back to headwater, which stops reporting that release. Flywheel is the Method the whole loop belongs to.</desc>` +
     out.join('') +
     `</svg>`;
