@@ -1,0 +1,26 @@
+# sluice gates every merge into a bolt and onto main: the demo's build,
+# `bun run demo:build`, in the package's devenv shell, the one build it
+# has. main and the bolts live on GitHub: every round fetches them from
+# origin and forms on what it holds, and a landing is a leased push as the
+# host's [forge] app. crew makes each bolt there with `sluice branch create`.
+[tests]
+runner = "command"
+command = "bun run demo:build"
+toolchain = ["devenv", "print-dev-env"]
+
+[branches."bolt/*"]
+parallel = 4
+batch = false
+flaky = "fail"
+timeout = "15m"
+remote = "origin"
+
+[branches.main]
+parallel = 2
+batch = false
+flaky = "fail"
+timeout = "15m"
+remote = "origin"
+
+[branches.main.pull_requests]
+reviews = 0
