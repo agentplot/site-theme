@@ -1,6 +1,6 @@
 // The theme's demo, both ways a site takes it: a Starlight site, here
 // millpond's stand-in, with the family's header, footer and look; and plain
-// Astro pages under /plain/, one per member, as flywheel-web would use them.
+// Astro pages under /plain/, one per member, as boomdrive-web would use them.
 // It has no package.json of its own: it runs on the package's dev
 // dependencies, and reaches the theme by the package's own name and exports
 // (`bun run demo`, `bun run demo:build`).

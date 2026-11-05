@@ -15,7 +15,7 @@
 //      and the question in a sounding, whose accepted conclusion comes back
 //      to millpond as a new item.
 //   5  sluice tests each change as merged and lands both on main.
-//   6  tailrace publishes what landed: the artifact signed, its verdict
+//   6  timber publishes what landed: the artifact signed, its verdict
 //      attached, and beta moves to it.
 //   7  The landed bump moves the pin back upstream, and headwater stops
 //      reporting the release.
@@ -75,7 +75,7 @@ interface Layout {
   sdW: number;
   ld: Pt;
   ldW: number;
-  /** tailrace, under main; the return lane passes behind it. */
+  /** timber, under main; the return lane passes behind it. */
   tr: Pt;
   trW: number;
   /** Each station's hand-on to the next, as a line through its points. */
@@ -102,13 +102,13 @@ const heads = (at: Pt[]): Layout['heads'] => [
   { n: 3, label: 'LAUNCH', at: at[2], of: ['millpond', 'flume'] },
   { n: 4, label: 'WORK', at: at[3], of: ['sounding'] },
   { n: 5, label: 'LAND', at: at[4], of: ['sluice'] },
-  { n: 6, label: 'DELIVER', at: at[5], of: ['tailrace'] },
+  { n: 6, label: 'DELIVER', at: at[5], of: ['timber'] },
   { n: 7, label: 'THE LOOP CLOSES', at: at[6], of: ['headwater'] },
 ];
 
 // The flume stands between millpond and the work column; the sounding's
 // conclusion goes back under it, up into millpond under the item it answers.
-// tailrace sits under main, where the merges' labels leave no room for its
+// timber sits under main, where the merges' labels leave no room for its
 // step's head, so that head is on the loop's last line, under the lane.
 const wide: Layout = {
   key: 'w',
@@ -151,7 +151,7 @@ const wide: Layout = {
 
 // Down the page, for a documentation column: the flume lies across under
 // the inbox, the three work stations side by side under it, then sluice,
-// then tailrace across under main.
+// then timber across under main.
 const square: Layout = {
   key: 's',
   W: 520,
@@ -356,15 +356,15 @@ function draw(L: Layout, shared: Set<string>): { svg: string; css: string } {
   const row = L.hw[1] + 45;
   const ret: Pt[] = [[xa, mainY + 27], [xa, L.lane], [10, L.lane], [10, row], [L.hw[0], row]];
 
-  // The frame: Flywheel, the Method the loop belongs to.
+  // The frame: Boomdrive, the Method the loop belongs to.
   put(`<rect class="fd-frame" width="${L.W}" height="${L.H}"/>`);
   if (L.sub === 'beside') {
     put(
-      `<text x="${L.title[0]}" y="${L.title[1]}"><tspan class="fd-title fd-of-flywheel">Flywheel</tspan>` +
+      `<text x="${L.title[0]}" y="${L.title[1]}"><tspan class="fd-title fd-of-boomdrive">Boomdrive</tspan>` +
         `<tspan class="fd-m fd-sm" dx="10">the Method all of it belongs to</tspan></text>`,
     );
   } else {
-    put(`<text class="fd-title fd-of-flywheel" x="${L.title[0]}" y="${L.title[1]}">Flywheel</text>`);
+    put(`<text class="fd-title fd-of-boomdrive" x="${L.title[0]}" y="${L.title[1]}">Boomdrive</text>`);
     put(`<text class="fd-m fd-sm" x="${L.sub[0]}" y="${L.sub[1]}">the Method all of it belongs to</text>`);
   }
 
@@ -383,7 +383,7 @@ function draw(L: Layout, shared: Set<string>): { svg: string; css: string } {
   put(`<text class="fd-m fd-sm" x="${L.loop[0]}" y="${L.loop[1]}">the landed bump moves the pin to 2026.10.10</text>`);
 
   // The loop: each station hands on to the next, main's head hands on down
-  // to tailrace from under its merge's label, and the return lane closes it.
+  // to timber from under its merge's label, and the return lane closes it.
   put(L.links.map(arrow).join(''));
   put(arrow([[xb, mainY + 25], [xb, L.tr[1]]]));
   put(`<polyline class="fd-halo" points="${L.back.map((p) => p.join(',')).join(' ')}"/>` + arrow(L.back));
@@ -651,16 +651,16 @@ function draw(L: Layout, shared: Set<string>): { svg: string; css: string } {
   put(`<g class="${fade('newit', 62)}">${at(slot.item3, item('Parquet'))}</g>`);
 
   // 7 · the landed bump moves the pin, back up the lane to headwater. The
-  // lane passes behind tailrace, so the station is drawn after the pin.
+  // lane passes behind timber, so the station is drawn after the pin.
   travel('pin', ret, 84, 8, 'fd-pin');
 
-  // tailrace: what landed, published. 6 · the landing comes down from main's
+  // timber: what landed, published. 6 · the landing comes down from main's
   // head, is signed with its verdict attached, and beta moves to it.
   {
     const [x, y] = L.tr;
     put(
-      `<g class="fd-st fd-of-tailrace"><rect class="fd-box" x="${x}" y="${y}" width="${L.trW}" height="${TR_H}" rx="8"/>` +
-        `<text class="fd-name" x="${x + 14}" y="${y + 24}">tailrace</text>` +
+      `<g class="fd-st fd-of-timber"><rect class="fd-box" x="${x}" y="${y}" width="${L.trW}" height="${TR_H}" rx="8"/>` +
+        `<text class="fd-name" x="${x + 14}" y="${y + 24}">timber</text>` +
         `<text class="fd-xs fd-m" x="${x + 14}" y="${y + 40}">publishes what landed</text></g>`,
     );
     token(
@@ -684,12 +684,12 @@ function draw(L: Layout, shared: Set<string>): { svg: string; css: string } {
   const n = ++instances;
   const svg =
     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${L.W} ${L.H}" class="fd-svg" role="img" aria-labelledby="fd${n}-t fd${n}-d">` +
-    `<title id="fd${n}-t">The Flywheel family: one loop from what is noticed to what lands</title>` +
+    `<title id="fd${n}-t">The Boomdrive family: one loop from what is noticed to what lands</title>` +
     `<desc id="fd${n}-d">headwater reports a new release of mise and eddy lists a recorded planning call; each prints a capture, and millpond keeps both. ` +
     `The release is its own excerpt, so it becomes one signal; a reader reads the meeting into three signals. Curation joins two of them into one item and makes the third, a question, an item of its own. ` +
     `Each item runs down the flume, which launches one agent in one worktree for it: the bump in one worktree, the export in a planner&#39;s plan, and the question in a sounding, whose accepted conclusion comes back to millpond as a new item. sluice tests each change as merged and lands both on main, and flume tidies the bump&#39;s worktree. ` +
-    `tailrace publishes the landing: signed, with its verdict attached; beta moves to it, and environments converge. ` +
-    `The landed bump moves the pin back to headwater, which stops reporting that release. Flywheel is the Method the whole loop belongs to.</desc>` +
+    `timber publishes the landing: signed, with its verdict attached; beta moves to it, and environments converge. ` +
+    `The landed bump moves the pin back to headwater, which stops reporting that release. Boomdrive is the Method the whole loop belongs to.</desc>` +
     out.join('') +
     `</svg>`;
   return { svg, css: s.css.join('') };

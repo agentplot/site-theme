@@ -29,7 +29,7 @@ const { wide, square, tall, css } = diagram();
   <div class="fd-tall" set:html={tall} />
   <figcaption class="fd-caption">
     <p class="fd-claim">
-      One loop, from what is noticed to what lands. <b class="fd-of-flywheel">Flywheel</b> is the Method it belongs to.
+      One loop, from what is noticed to what lands. <b class="fd-of-boomdrive">Boomdrive</b> is the Method it belongs to.
     </p>
     <ol class="fd-steps">
       <li class="fd-cap fd-c-1 fd-step-headwater fd-step-eddy">
@@ -58,10 +58,10 @@ const { wide, square, tall, css } = diagram();
         <span class="fd-n">5</span>
         <span><b class="fd-of-sluice">sluice</b> tests the work as merged and lands it.</span>
       </li>
-      <li class="fd-cap fd-c-6 fd-step-tailrace">
+      <li class="fd-cap fd-c-6 fd-step-timber">
         <span class="fd-n">6</span>
         <span>
-          <b class="fd-of-tailrace">tailrace</b> publishes the landing: signed, with its verdict attached; beta moves, and
+          <b class="fd-of-timber">timber</b> publishes the landing: signed, with its verdict attached; beta moves, and
           environments converge.
         </span>
       </li>
@@ -163,14 +163,14 @@ const { wide, square, tall, css } = diagram();
 
   /* The member whose site this is: its stations, its steps' badges and its
      name in the steps take its accent. */
-  .fd-hl-flywheel .fd-of-flywheel,
+  .fd-hl-boomdrive .fd-of-boomdrive,
   .fd-hl-headwater .fd-of-headwater,
   .fd-hl-eddy .fd-of-eddy,
   .fd-hl-millpond .fd-of-millpond,
   .fd-hl-flume .fd-of-flume,
   .fd-hl-sounding .fd-of-sounding,
   .fd-hl-sluice .fd-of-sluice,
-  .fd-hl-tailrace .fd-of-tailrace {
+  .fd-hl-timber .fd-of-timber {
     --fd-on: var(--fd-hi);
     --fd-on-fill: var(--fd-tint);
     --fd-on-width: 2;
@@ -181,25 +181,25 @@ const { wide, square, tall, css } = diagram();
   .fd-hl-flume .fd-step-flume .fd-n,
   .fd-hl-sounding .fd-step-sounding .fd-n,
   .fd-hl-sluice .fd-step-sluice .fd-n,
-  .fd-hl-tailrace .fd-step-tailrace .fd-n {
+  .fd-hl-timber .fd-step-timber .fd-n {
     background: var(--fd-hi);
   }
-  .fd.fd-hl-flywheel {
+  .fd.fd-hl-boomdrive {
     border-color: var(--fd-hi);
   }
-  /* Flywheel is the Method the whole loop belongs to: its links, its lane
+  /* Boomdrive is the Method the whole loop belongs to: its links, its lane
      and every step take the accent. */
-  .fd-hl-flywheel .fd-loop {
+  .fd-hl-boomdrive .fd-loop {
     stroke: var(--fd-hi);
     stroke-width: 1.8;
   }
-  .fd-hl-flywheel .fd-badge {
+  .fd-hl-boomdrive .fd-badge {
     --fd-on: var(--fd-hi);
   }
-  .fd-hl-flywheel .fd-n {
+  .fd-hl-boomdrive .fd-n {
     background: var(--fd-hi);
   }
-  .fd-hl-flywheel .fd-loop-h {
+  .fd-hl-boomdrive .fd-loop-h {
     fill: var(--fd-hi);
   }
 

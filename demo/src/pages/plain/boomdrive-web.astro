@@ -1,5 +1,5 @@
 ---
-// How flywheel-web takes the theme: its own palette, dark only, mapped onto
+// How boomdrive-web takes the theme: its own palette, dark only, mapped onto
 // the tokens, so the bar, the diagram and the footer wear its ground.
 import '@agentplot/site-theme/tokens.css';
 import FamilyBar from '@agentplot/site-theme/FamilyBar.astro';
@@ -12,21 +12,21 @@ import Family from '@agentplot/site-theme/Family.astro';
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Flywheel · site-theme demo</title>
+    <title>Boomdrive · site-theme demo</title>
   </head>
   <body>
-    <FamilyBar current="flywheel" />
+    <FamilyBar current="boomdrive" />
     <main>
       <h1>The tools</h1>
       <p>Each tool of the Method, and how they turn together.</p>
-      <Family highlight="flywheel" />
-      <FamilyFooter current="flywheel" />
+      <Family highlight="boomdrive" />
+      <FamilyFooter current="boomdrive" />
     </main>
   </body>
 </html>
 
 <style is:global>
-  /* flywheel-web's src/styles/site.css, its colours only. */
+  /* boomdrive-web's src/styles/site.css, its colours only. */
   :root {
     --ground: #0d2528;
     --ground-2: #123236;

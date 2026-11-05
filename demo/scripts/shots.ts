@@ -64,9 +64,9 @@ for (const scheme of ['light', 'dark'] as const) {
     await shot(page, `starlight-page-${tag}`);
     await page.close();
 
-    page = await open('/plain/flywheel/', width, scheme);
+    page = await open('/plain/boomdrive/', width, scheme);
     await at(page, 72);
-    await shot(page, `plain-flywheel-${tag}`);
+    await shot(page, `plain-boomdrive-${tag}`);
     await page.close();
   }
 }
@@ -97,16 +97,16 @@ for (const scheme of ['dark', 'light'] as const) {
   await page.close();
 }
 
-// flywheel-web's palette mapped onto the tokens.
+// boomdrive-web's palette mapped onto the tokens.
 for (const width of [1280, 390]) {
-  const page = await open('/plain/flywheel-web/', width, 'dark');
+  const page = await open('/plain/boomdrive-web/', width, 'dark');
   await at(page, 72);
-  await shot(page, `flywheel-web-${width}`);
+  await shot(page, `boomdrive-web-${width}`);
   await page.close();
 }
 
 // The diagram highlighted for each member, wide and tall.
-for (const id of ['flywheel', 'headwater', 'eddy', 'millpond', 'flume', 'sounding', 'sluice', 'tailrace']) {
+for (const id of ['boomdrive', 'headwater', 'eddy', 'millpond', 'flume', 'sounding', 'sluice', 'timber']) {
   for (const [width, scheme] of [
     [1280, 'dark'],
     [1280, 'light'],

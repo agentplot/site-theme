@@ -1,7 +1,7 @@
 {
   "name": "@agentplot/site-theme",
   "version": "0.1.0",
-  "description": "The Flywheel family's site theme: type and layout, the family bar and footer, the family list and the family diagram, for Starlight and plain Astro sites.",
+  "description": "The Boomdrive family's site theme: type and layout, the family bar and footer, the family list and the family diagram, for Starlight and plain Astro sites.",
   "license": "MIT",
   "type": "module",
   "scripts": {
