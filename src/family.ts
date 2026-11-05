@@ -3,7 +3,7 @@
 // the umbrella first, then what notices, the inbox, what launches the work,
 // what works a question, what lands, and what delivers.
 
-export type MemberId = 'flywheel' | 'headwater' | 'eddy' | 'millpond' | 'flume' | 'sounding' | 'sluice' | 'tailrace';
+export type MemberId = 'boomdrive' | 'headwater' | 'eddy' | 'millpond' | 'flume' | 'sounding' | 'sluice' | 'timber';
 
 /** Where a member sits in the loop. */
 export type Place = 'umbrella' | 'notice' | 'inbox' | 'launch' | 'work' | 'land' | 'deliver';
@@ -23,7 +23,7 @@ export interface Member {
   place: Place;
   status: Status;
   site: string;
-  /** Its public design book; Flywheel's design is private, so it has none. */
+  /** Its public design book; Boomdrive's design is private, so it has none. */
   book?: string;
   accent: Pair;
 }
@@ -32,12 +32,12 @@ const pages = 'https://agentplot.github.io';
 
 export const family: readonly Member[] = [
   {
-    id: 'flywheel',
-    name: 'Flywheel',
+    id: 'boomdrive',
+    name: 'Boomdrive',
     line: 'The Method for running a fleet of coding agents, and the engine that runs it.',
     place: 'umbrella',
     status: 'in use',
-    site: `${pages}/flywheel-web/`,
+    site: `${pages}/boomdrive-web/`,
     accent: { light: '#7d6110', dark: '#c9a227' },
   },
   {
@@ -101,19 +101,19 @@ export const family: readonly Member[] = [
     accent: { light: '#1f8a4c', dark: '#45c27a' },
   },
   {
-    id: 'tailrace',
-    name: 'tailrace',
+    id: 'timber',
+    name: 'timber',
     line: 'Build once, sign everything, promote with proof, in your own account.',
     place: 'deliver',
     status: 'designed, not built',
-    site: `${pages}/tailrace/`,
-    book: `${pages}/blueprints/tailrace/`,
+    site: `${pages}/timber/`,
+    book: `${pages}/blueprints/timber/`,
     accent: { light: '#1d7368', dark: '#3cc4ad' },
   },
 ];
 
-/** The Flywheel site's page of every tool. */
-export const hub = `${pages}/flywheel-web/tools/`;
+/** The Boomdrive site's page of every tool. */
+export const hub = `${pages}/boomdrive-web/tools/`;
 
 export const member = (id: MemberId): Member => {
   const m = family.find((f) => f.id === id);

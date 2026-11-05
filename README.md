@@ -1,20 +1,20 @@
 # @agentplot/site-theme
 
-The look the Flywheel family's sites share: one type scale and layout, a
+The look the Boomdrive family's sites share: one type scale and layout, a
 family bar across the top, a family footer, the one list of the family, and
 the family diagram. Each site keeps its own accent: sluice its green,
-Flywheel its brass.
+Boomdrive its brass.
 
 | Member | Place | Status | Accent, light / dark |
 |---|---|---|---|
-| Flywheel | umbrella | in use | `#7d6110` / `#c9a227` |
+| Boomdrive | umbrella | in use | `#7d6110` / `#c9a227` |
 | headwater | notice | designed, not built | `#a8442a` / `#ef8a6a` |
 | eddy | notice | designed, not built | `#6b4fd8` / `#a68cff` |
 | millpond | inbox | designed, not built | `#2160b0` / `#6ea8fe` |
 | flume | launch | designed, not built | `#2f6e7a` / `#7fb8c4` |
 | sounding | work | designed, not built | `#a3358f` / `#e486d2` |
 | sluice | land | in use | `#1f8a4c` / `#45c27a` |
-| tailrace | deliver | designed, not built | `#1d7368` / `#3cc4ad` |
+| timber | deliver | designed, not built | `#1d7368` / `#3cc4ad` |
 
 Every accent meets 4.5:1 against its theme's page, except sluice's light
 green, which is sluice's own (4.05:1).
@@ -96,16 +96,16 @@ import Family from '@agentplot/site-theme/Family.astro';
 ---
 <html lang="en" data-theme="dark">
   <body>
-    <FamilyBar current="flywheel" />
-    <main>… <Family highlight="flywheel" /> …</main>
-    <FamilyFooter current="flywheel" />
+    <FamilyBar current="boomdrive" />
+    <main>… <Family highlight="boomdrive" /> …</main>
+    <FamilyFooter current="boomdrive" />
   </body>
 </html>
 ```
 
 Themes follow Starlight's: dark on `:root`, light under
 `:root[data-theme='light']`, and a page with no `data-theme` follows the
-reader's setting. A site with one theme, as flywheel-web is dark, sets
+reader's setting. A site with one theme, as boomdrive-web is dark, sets
 `data-theme` on `<html>`. A site with its own palette maps it onto the
 tokens, so the bar, footer and diagram take its colours:
 
@@ -127,9 +127,9 @@ down flume, which launches one agent in one worktree for it and tidies the
 place once the work lands; an item is worked in its worktree or a
 planner's plan, and a question in a sounding, whose accepted conclusion
 comes back to millpond as a new item; sluice tests the work as merged and
-lands it; tailrace publishes the landing, signed with its verdict attached,
+lands it; timber publishes the landing, signed with its verdict attached,
 so beta moves and environments converge; and the landed bump moves the
-pin, so headwater stops reporting that release. Flywheel is the Method the
+pin, so headwater stops reporting that release. Boomdrive is the Method the
 loop belongs to.
 
 It is CSS keyframes only (`src/diagram.ts`), a 20-second loop, so it moves
@@ -173,8 +173,8 @@ shots [dir]              # build the demo and screenshot it into dir
 
 The demo in `demo/` takes the theme both ways: a Starlight site standing in
 for millpond's, plain Astro pages under `/plain/<member>/`, one per member
-with the diagram highlighted for it, and `/plain/flywheel-web/`, with
-flywheel-web's palette mapped onto the tokens. `/doc/` is an ordinary
+with the diagram highlighted for it, and `/plain/boomdrive-web/`, with
+boomdrive-web's palette mapped onto the tokens. `/doc/` is an ordinary
 Starlight page with the diagram beside "On this page". It has no package.json of its
 own: it runs on this package's dev dependencies and reaches the theme by
 the package's name and exports, as a site does. `shots` writes each page at
